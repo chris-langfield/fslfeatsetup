@@ -165,10 +165,14 @@ class DataOptions:
                   tr =-1, # int
                   highPassCutoff = -1, # int
                   higherLevelInput = FeatHigherLevelInput.COPE_IMAGES): # int
-        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
 
-            if not os.path.exists(inputPaths[0]):
-                raise PyFSFError(inputPaths[0] + " does not exist!")
+        if inputPaths in [[], None]:
+            raise PyFSFError("No inputs were provided!")
+
+        if not os.path.exists(inputPaths[0]):
+            raise PyFSFError(inputPaths[0] + " does not exist!")
+
+        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
 
             if not tr == -1:
                 print("TR specified by user. Will not get TR from input image")
@@ -214,7 +218,11 @@ class DataOptions:
                     highPassCutoff = self.DEFAULT_HIGHPASS_CUTOFF
                 else:
                     highPassCutoff = 100
-            else try:
+            else:
+                try:
+                    int(highPassCutoff)
+                except ValueError:
+                    raise PyFSFError("highPassCutoff must be int")
             self.parent.settings["paradigm_hp"] = highPassCutoff
 
         elif self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
@@ -231,14 +239,17 @@ class DataOptions:
 
 
         ## voxel size
-        dim1 = int(
-            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-        dim2 = int(
-            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-        dim3 = int(
-            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-        dim4 = int(
-            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+        try:
+            dim1 = int(
+                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+            dim2 = int(
+                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+            dim3 = int(
+                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+            dim4 = int(
+                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+        except:
+            raise PyFSFError("Problem with getting image dimensions for " + inputPaths[0])
 
         totalVoxels = dim1 * dim2 * dim3 * dim4
         self.parent.settings["totalVoxels"] = totalVoxels
@@ -283,12 +294,25 @@ class MiscOptions:
             else:
                 self.DEFAULT_OVERWRITE_POSTSTATS = False
 
-    def Configure(self, brainThreshold=-1, noiseLevel=-1, temporalSmoothness=-1, zThreshold=-1, cleanupFirstLevel=None, overwriteOriginalPostStats = None, estimateNoiseFromData=False):
+    def Configure(self,
+                  brainThreshold=-1, # int
+                  noiseLevel=-1, # float
+                  temporalSmoothness=-1, # float
+                  zThreshold=-1, # float
+                  cleanupFirstLevel=None, # bool
+                  overwriteOriginalPostStats = None, # bool
+                  estimateNoiseFromData=False):
+
         if brainThreshold == -1:
             if hasattr(self, 'DEFAULT_BRAIN_THRESH'):
                 brainThreshold = self.DEFAULT_BRAIN_THRESH
             else:
                 brainThreshold = 10
+        else:
+            try:
+                int(brainThreshold)
+            except ValueError:
+                raise PyFSFError("Brain threshold must be int")
         self.parent.settings["brain_thresh"] = brainThreshold
 
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
@@ -298,13 +322,23 @@ class MiscOptions:
                     noiseLevel = self.DEFAULT_NOISE
                 else:
                     noiseLevel = 0.66
+            else:
+                try:
+                    float(noiseLevel)
+                except ValueError:
+                    raise PyFSFError("Noise level must be float")
             self.parent.settings["noise"] = noiseLevel
 
             if temporalSmoothness == -1:
-                if hasattr(self, 'DEFAULT_SMOOOTHNESS'):
+                if hasattr(self, 'DEFAULT_SMOOTHNESS'):
                     temporalSmoothness = self.DEFAULT_SMOOTHNESS
                 else:
                     temporalSmoothness = 0.34
+            else:
+                try:
+                    float(temporalSmoothness)
+                except ValueError:
+                    raise PyFSFError("Temporal smoothness must be float")
             self.parent.settings["noisear"] = temporalSmoothness
 
             if zThreshold == -1:
@@ -312,6 +346,11 @@ class MiscOptions:
                     zThreshold = self.DEFAULT_CRITICAL_Z
                 else:
                     zThreshold = 5.3
+            else:
+                try:
+                    float(zThreshold)
+                except ValueError:
+                    raise PyFSFError("Z threshold must be float")
             self.parent.settings["critical_z"] = zThreshold
 
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
@@ -320,6 +359,9 @@ class MiscOptions:
                     cleanupFirstLevel = self.DEFAULT_CLEANUP_FIRSTLEVEL_YN
                 else:
                     cleanupFirstLevel = False
+            else:
+                if cleanupFirstLevel not in [True, False]:
+                    raise PyFSFError("Cleanup First Level must be bool")
             self.parent.settings["sscleanup"] = int(cleanupFirstLevel)
 
             if overwriteOriginalPostStats is None:
@@ -327,6 +369,9 @@ class MiscOptions:
                     overwriteOriginalPostStats = self.DEFAULT_OVERWRITE_POSTSTATS
                 else:
                     overwriteOriginalPostStats = False
+            else:
+                if overwriteOriginalPostStats not in [True, False]:
+                    raise PyFSFError("overwriteOriginalPostStats must be bool")
             self.parent.settings["newdir_yn"] = overwriteOriginalPostStats
 
 
@@ -434,6 +479,9 @@ class PreStatsOptions:
                 mcflirt = self.DEFAULT_MCFLIRT
             else:
                 mcflirt = 0
+        else:
+            if mcflirt not in [True, False]:
+                raise PyFSFError("MCFLIRT option must be bool")
         self.parent.settings["mc"] = mcflirt
 
         if b0_unwarp is None:
@@ -441,6 +489,9 @@ class PreStatsOptions:
                 b0_unwarp = self.DEFAULT_B0_UNWARP
             else:
                 b0_unwarp = False
+        else:
+            if b0_unwarp not in [True, False]:
+                raise PyFSFError("b0_unwarp option must be bool")
         self.parent.settings["regunwarp_yn"] = b0_unwarp
 
         if melodic is None:
@@ -448,6 +499,9 @@ class PreStatsOptions:
                 melodic = self.DEFAULT_MELODIC
             else:
                 melodic = False
+        else:
+            if melodic not in [True, False]:
+                raise PyFSFError("melodic option must be bool")
         self.parent.settings["melodic_yn"] = melodic
 
         if sliceTiming is None:
@@ -455,6 +509,9 @@ class PreStatsOptions:
                 sliceTiming = self.DEFAULT_SLICE_TIMING
             else:
                 sliceTiming = FeatSliceTiming.NONE
+        else:
+            if sliceTiming not in FeatSliceTiming.Options:
+                raise PyFSFError("Slice timing option must be in FeatSliceTiming.Options")
         self.parent.settings["st"] = sliceTiming
 
         if bet is None:
@@ -462,6 +519,9 @@ class PreStatsOptions:
                 bet = self.DEFAULT_BET
             else:
                 bet = False
+        else:
+            if bet not in [True, False]:
+                raise PyFSFError("BET option must be bool")
         self.parent.settings["bet_yn"] = bet
 
         if spatialSmoothing is None:
@@ -469,12 +529,16 @@ class PreStatsOptions:
                 spatialSmoothing = self.DEFAULT_SMOOTH
             else:
                 spatialSmoothing = 5.0
+        else:
+            try:
+                float(spatialSmoothing)
+            except ValueError:
+                raise PyFSFError("Spatial smoothing must be float")
         self.parent.settings["smooth"] = spatialSmoothing
 
         if sliceTimingFile is None:
             if not self.parent.settings["st"] not in [FeatSliceTiming.NONE, FeatSliceTiming.INTERLEAVED, FeatSliceTiming.REGULAR_DOWN, FeatSliceTiming.REGULAR_UP]:
-                print("Error: Slice timing or slice order file is required")
-                return
+                raise PyFSFError("Slice timing or slice order file is required")
         else:
             self.parent.settings["st_file"] = sliceTimingFile
 
@@ -483,6 +547,9 @@ class PreStatsOptions:
                 intensityNormalization = self.DEFAULT_NORM
             else:
                 intensityNormalization = False
+        else:
+            if intensityNormalization not in [True, False]:
+                raise PyFSFError("intensity normalization option must be bool")
         self.parent.settings["norm_yn"] = intensityNormalization
 
         if perfusionSubtraction is None:
@@ -490,6 +557,9 @@ class PreStatsOptions:
                 perfusionSubtraction = self.DEFAULT_PERFSUB
             else:
                 perfusionSubtraction = False
+        else:
+            if perfusionSubtraction not in [True, False]:
+                raise PyFSFError("Perfusion subtraction option must be bool")
         self.parent.settings["perfsub_yn"] = perfusionSubtraction
 
         if perfusionTagControlOrder is None:
@@ -497,6 +567,9 @@ class PreStatsOptions:
                 perfusionTagControlOrder = self.DEFAULT_PERF_TAGFIRST
             else:
                 perfusionTagControlOrder = FeatPerfusion.FirstTimepointIsTag
+        else:
+            if perfusionTagControlOrder not in FeatPerfusion.Options:
+                raise PyFSFError("Perfusion tag control order must be in FeatPerfusion.Options. Or use 0 or 1.")
         self.parent.settings["tagfirst"] = perfusionTagControlOrder
 
         if highPassTemporalFilter is None:
@@ -504,13 +577,19 @@ class PreStatsOptions:
                 highPassTemporalFilter = self.DEFAULT_TEMPORAL_HIGHPASS
             else:
                 highPassTemporalFilter = False
+        else:
+            if highPassTemporalFilter not in [True, False]:
+                raise PyFSFError("High pass temporal filter option must be bool")
         self.parent.settings["temphp_yn"] = highPassTemporalFilter
 
         if lowPassTemporalFilter is None:
             if hasattr(self, 'DEFAULT_TEMPORAL_LOWPASS'):
                 lowPassTemporalFilter = self.DEFAULT_TEMPORAL_LOWPASS
             else:
-                loowPassTemporalFilter = False
+                lowPassTemporalFilter = False
+        else:
+            if lowPassTemporalFilter not in [True, False]:
+                raise PyFSFError("Low pass temporal filter option must be bool")
         self.parent.settings["templp_yn"] = lowPassTemporalFilter
 
         if usingAlternateReferenceImage is None:
@@ -518,11 +597,14 @@ class PreStatsOptions:
                 usingAlternateReferenceImage = self.DEFAULT_ALT_REF_IMG
             else:
                 usingAlternateReferenceImage = False
+        else:
+            if usingAlternateReferenceImage not in [True, False]:
+                raise PyFSFError("Use Alternate Reference Image option must be bool")
         self.parent.settings["alternativeReference_yn"] = usingAlternateReferenceImage
 
         if alternateReferenceImages is None:
             if usingAlternateReferenceImage:
-                print("Error: must specify at least one alternate reference image")
+                raise PyFSFError("Must specify at least one alternate reference image if usingAlternateReferenceImage is set to True")
         else:
             numAltImages = len(alternateReferenceImages)
             # use up to the first 3 reference images provided
@@ -558,6 +640,11 @@ class PreStatsOptions:
                 epiDwell = self.DEFAULT_EPI_DWELL
             else:
                 epiDwell = 0.0
+        else:
+            try:
+                float(epiDwell)
+            except ValueError:
+                raise PyFSFError("epiDwell must be float")
         self.parent.settings["dwell"] = epiDwell
 
         if epiTE is None:
@@ -565,6 +652,9 @@ class PreStatsOptions:
                 epiTE = self.DEFAULT_EPI_TE
             else:
                 epiTE = 0.0
+        else:
+            if epiTE not in [True, False]:
+                raise PyFSFError("epiTE option must be float")
         self.parent.settings["te"] = epiTE
 
         if signalLoss is None:
@@ -572,6 +662,9 @@ class PreStatsOptions:
                 signalLoss = self.DEFAULT_SIGNAL_LOSS
             else:
                 signalLoss = 10
+        else:
+            if signalLoss not in [True, False]:
+                raise PyFSFError("Signal loss option must be int")
         self.parent.settings["signallossthresh"] = signalLoss
 
         if unwarpDir is None:
@@ -579,4 +672,7 @@ class PreStatsOptions:
                 unwarpDir = self.DEFAULT_UNWARP_DIR
             else:
                 unwarpDir = FeatUnwarp.Y_MINUS
+        else:
+            if unwarpDir not in FeatUnwarp.Directions:
+                raise PyFSFError("unwarpDir must be in FeatUnwarp.Directions")
         self.parent.settings["unwarp_dir"] = unwarpDir
