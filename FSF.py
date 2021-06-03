@@ -64,6 +64,7 @@ class FeatSettings:
     def __init__(self, LEVEL, ANALYSIS, defaultsFilename=DEFAULT_SETTINGS_PATH):
 
         self.settings = {}
+        self.defaults = {}
         self.inputs = []
 
         # must be set
@@ -83,6 +84,7 @@ class FeatSettings:
                     option = re.search('set fmri\((.*)\)', line).group(1)
                     value = line.split()[-1]
                     self.settings[option] = value
+                    self.defaults[option] = value
         else:
             print("Warning: The defaults file specified (" + defaultsFilename + ") was not found. No settings were loaded.")
 
@@ -97,9 +99,6 @@ class FeatSettings:
         else:
             print("Only full analysis, preprocessing, and stats are allowed")
 
-
-
-
     def printSettings(self):
         for option in self.settings:
             print(option,'--',self.settings[option])
@@ -108,8 +107,11 @@ class FeatSettings:
 class DataOptions:
     def __init__(self, myFeatSettings):
         self.parent = myFeatSettings
+        # default
+        if "paradigm_hp" in self.parent.defaults:
+            self.DEFAULT_HIGHPASS_CUTOFF = self.parent.defaults["paradigm_hp"]
 
-    def Configure(self, outputDirectory, inputPaths, totalVolumes=-1, deleteVolumes = -1, tr =-1, highPassCutoff = 60, higherLevelInput = FeatHigherLevelInput.COPE_IMAGES):
+    def Configure(self, outputDirectory, inputPaths, totalVolumes=-1, deleteVolumes = -1, tr =-1, highPassCutoff = -1, higherLevelInput = FeatHigherLevelInput.COPE_IMAGES):
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
             if not tr == -1:
                 print("TR specified by user. Will not get TR from input image")
@@ -125,7 +127,11 @@ class DataOptions:
                 print("Total volumes are", totalVolumes.replace("\n","").strip())
             if not deleteVolumes == -1:
                 self.parent.settings["ndelete"] = deleteVolumes
-            self.parent.settings["paradigm_hp"] = highPassCutoff
+            if highPassCutoff == -1:
+                if hasattr(self, 'DEFAULT_HIGHPASS_CUTOFF'):
+                    self.parent.settings["paradigm_hp"] = self.DEFAULT_HIGHPASS_CUTOFF
+                else:
+                    self.parent.settings["paradigm_hp"] = 100
 
         elif self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
             self.parent.settings["inputtype"] = higherLevelInput
@@ -172,13 +178,47 @@ class DataOptions:
 class MiscOptions:
     def __init__(self, myFeatOptions):
         self.parent = myFeatOptions
+        # default
+        if "brain_thresh" in self.parent.defaults:
+            self.DEFAULT_BRAIN_THRESH = int(self.parent.defaults["brain_thresh"])
+        if "noise" in self.parent.defaults:
+            self.DEFAULT_NOISE = float(self.parent.defaults["noise"])
+        if "noisear" in self.parent.defaults:
+            self.DEFAULT_SMOOTHNESS = float(self.parent.defaults["noisear"])
+        if "critical_z" in self.parent.defaults:
+            self.DEFAULT_CRITICAL_Z = float(self.parent.defaults["critical_z"])
 
-    def Configure(self, brainThreshold=10, noiseLevel=0.66, temporalSmoothness=0.34, zThreshold=5.3, cleanupFirstLevel=False, estimateNoiseFromData=False):
+    def Configure(self, brainThreshold=-1, noiseLevel=-1, temporalSmoothness=-1, zThreshold=-1, cleanupFirstLevel=False, estimateNoiseFromData=False):
+        if brainThreshold == -1:
+            if hasattr(self, 'DEFAULT_BRAIN_THRESH'):
+                brainThreshold = self.DEFAULT_BRAIN_THRESH
+            else:
+                brainThreshold = 10
         self.parent.settings["brain_thresh"] = brainThreshold
+
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+
+            if noiseLevel == -1:
+                if hasattr(self, 'DEFAULT_NOISE'):
+                    noiseLevel = self.DEFAULT_NOISE
+                else:
+                    noiseLevel = 0.66
             self.parent.settings["noise"] = noiseLevel
+
+            if temporalSmoothness == -1:
+                if hasattr(self, 'DEFAULT_SMOOOTHNESS'):
+                    temporalSmoothness = self.DEFAULT_SMOOTHNESS
+                else:
+                    temporalSmoothness = 0.34
             self.parent.settings["noisear"] = temporalSmoothness
+
+            if zThreshold == -1:
+                if hasattr(self, 'DEFAULT_CRITICAL_Z'):
+                    zThreshold = self.DEFAULT_CRITICAL_Z
+                else:
+                    zThreshold = 5.3
             self.parent.settings["critical_z"] = zThreshold
+
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
             self.parent.settings["sscleanup"] = int(cleanupFirstLevel)
 
