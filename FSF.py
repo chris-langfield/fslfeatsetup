@@ -109,7 +109,7 @@ class DataOptions:
     def __init__(self, myFeatSettings):
         self.parent = myFeatSettings
 
-    def Configure(self, outputDirectory, numInputs, inputPaths, totalVolumes=-1, deleteVolumes = -1, tr =-1, highPassCutoff = 60, higherLevelInput = FeatHigherLevelInput.COPE_IMAGES):
+    def Configure(self, outputDirectory, inputPaths, totalVolumes=-1, deleteVolumes = -1, tr =-1, highPassCutoff = 60, higherLevelInput = FeatHigherLevelInput.COPE_IMAGES):
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
             if not tr == -1:
                 print("TR specified by user. Will not get TR from input image")
@@ -132,7 +132,7 @@ class DataOptions:
             self.parent.settings["npts"] = len(inputPaths)
 
         self.parent.settings["outputdir"] = outputDirectory
-        self.parent.settings["multiple"] = numInputs
+        self.parent.settings["multiple"] = len(inputPaths)
 
         # input paths
 
@@ -141,13 +141,13 @@ class DataOptions:
 
 
         ## voxel size
-        dim1 = int(subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1"]).replace("\n", "").strip())
+        dim1 = int(subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
         dim2 = int(
-            subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1"]).replace("\n", "").strip())
+            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
         dim3 = int(
-            subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1"]).replace("\n", "").strip())
+            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
         dim4 = int(
-            subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1"]).replace("\n", "").strip())
+            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
 
         totalVoxels = dim1 * dim2 * dim3 * dim4
         self.parent.settings["totalVoxels"] = totalVoxels
@@ -168,4 +168,35 @@ class DataOptions:
         for i in range(len(self.parent.inputs)):
             print("\t", i+1, self.parent.inputs[i])
 
+
+class MiscOptions:
+    def __init__(self, myFeatOptions):
+        self.parent = myFeatOptions
+
+    def Configure(self, brainThreshold=10, noiseLevel=0.66, temporalSmoothness=0.34, zThreshold=5.3, cleanupFirstLevel=False, estimateNoiseFromData=False):
+        self.parent.settings["brain_thresh"] = brainThreshold
+        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+            self.parent.settings["noise"] = noiseLevel
+            self.parent.settings["noisear"] = temporalSmoothness
+            self.parent.settings["critical_z"] = zThreshold
+        if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
+            self.parent.settings["sscleanup"] = int(cleanupFirstLevel)
+
+    def printSettings(self):
+        print("Misc Settings: " + self.parent.settings["outputdir"])
+        print(FeatLevelToStr[self.parent.LEVEL], "|", FeatStagesToStr[self.parent.ANALYSIS])
+        print("--------------")
+        print("Brain/background threshold:", self.parent.settings["brain_thresh"])
+        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+            print("Noise level %:", self.parent.settings["noise"])
+            print("Temporal smoothness:", self.parent.settings["noisear"])
+            print("Z-threshold:", self.parent.settings["critical_z"])
+        if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
+            print("Cleanup first level standard-space images", self.parent.settings["sscleanup"])
+
+
+
+class PreStatsOptions:
+    def __init__(self):
+        pass
 
