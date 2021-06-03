@@ -630,3 +630,12 @@ class PreStatsOptions:
             if unwarpDir not in FeatUnwarp.Directions:
                 raise PyFSFError("unwarpDir must be in FeatUnwarp.Directions")
         self.parent.settings["unwarp_dir"] = unwarpDir
+
+class RegOptions:
+    def __init__(self, parent):
+        self.parent = parent
+    def Configure(self, mainStructuralImages, # list of filepaths
+                   mainStructuralRegSearch = None, # int
+                   mainStructuralDOF = None # int
+                  ):
+        pass
