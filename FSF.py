@@ -200,8 +200,18 @@ class MiscOptions:
             self.DEFAULT_SMOOTHNESS = float(self.parent.defaults["noisear"])
         if "critical_z" in self.parent.defaults:
             self.DEFAULT_CRITICAL_Z = float(self.parent.defaults["critical_z"])
+        if "sscleanup" in self.parent.defaults:
+            if int(self.parent.defaults["sscleanup"]) == 1:
+                self.DEFAULT_CLEANUP_FIRSTLEVEL_YN = True
+            else:
+                self.DEFAULT_CLEANUP_FIRSTLEVEL_YN = False
+        if "newdir_yn" in self.parent.defaults:
+            if int(self.parent.defaults["newdir_yn"]) == 1:
+                self.DEFAULT_OVERWRITE_POSTSTATS = True
+            else:
+                self.DEFAULT_OVERWRITE_POSTSTATS = False
 
-    def Configure(self, brainThreshold=-1, noiseLevel=-1, temporalSmoothness=-1, zThreshold=-1, cleanupFirstLevel=False, estimateNoiseFromData=False):
+    def Configure(self, brainThreshold=-1, noiseLevel=-1, temporalSmoothness=-1, zThreshold=-1, cleanupFirstLevel=None, overwriteOriginalPostStats = None, estimateNoiseFromData=False):
         if brainThreshold == -1:
             if hasattr(self, 'DEFAULT_BRAIN_THRESH'):
                 brainThreshold = self.DEFAULT_BRAIN_THRESH
@@ -233,7 +243,21 @@ class MiscOptions:
             self.parent.settings["critical_z"] = zThreshold
 
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
+            if cleanupFirstLevel is None:
+                if hasattr(self, 'DEFAULT_CLEANUP_FIRSTLEVEL_YN'):
+                    cleanupFirstLevel = self.DEFAULT_CLEANUP_FIRSTLEVEL_YN
+                else:
+                    cleanupFirstLevel = False
             self.parent.settings["sscleanup"] = int(cleanupFirstLevel)
+            
+            if overwriteOriginalPostStats is None:
+                if hasattr(self, 'DEFAULT_OVERWRITE_POSTSTATS'):
+                    overwriteOriginalPostStats = self.DEFAULT_OVERWRITE_POSTSTATS
+                else:
+                    overwriteOriginalPostStats = False
+            self.
+
+
 
     def printSettings(self):
         print("Misc Settings: " + self.parent.settings["outputdir"])
