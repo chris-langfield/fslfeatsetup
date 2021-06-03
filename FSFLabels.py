@@ -51,3 +51,12 @@ class RegistrationSearch:
     NO_SEARCH = 0
     NORMAL_SEARCH = 90
     FULL_SEARCH = 180
+    Options = [NO_SEARCH, NORMAL_SEARCH, FULL_SEARCH]
+
+class RegistrationDOF:
+    DOF_3 = 3
+    DOF_6 = 6
+    DOF_7 = 7
+    DOF_9 = 9
+    DOF_12 = 12
+    Options = [DOF_3,DOF_6,DOF_7,DOF_9,DOF_12]

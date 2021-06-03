@@ -49,6 +49,45 @@ DEFAULT_SETTINGS_PATH = os.path.join(FSLDIR,"etc/fslconf/feat.tcl")
 if not os.path.exists(DEFAULT_SETTINGS_PATH):
     print("Warning: default FEAT settings ($FSLDIR/etc/fslconf/feat.tcl does not exist. Defaults will not be loaded.")
 
+## get standard images
+class FeatStandardImg:
+    FMRIB58_FA_skeleton_1mm = FSLDIR + "/data/standard/FMRIB58_FA-skeleton_1mm"
+    FSL_HCP1065_V1_1mm = FSLDIR + "/data/standard/FSL_HCP1065_V1_1mm"
+    MNI152_T1_1mm_BigFoV_facemask = FSLDIR + "/data/standard/MNI152_T1_1mm_BigFoV_facemask"
+    MNI152_T1_2mm_LR_masked = FSLDIR + "/data/standard/MNI152_T1_2mm_LR-masked"
+    MNI152_T1_2mm_edges = FSLDIR + "/data/standard/MNI152_T1_2mm_edges"
+    FMRIB58_FA_1mm = FSLDIR + "/data/standard/FMRIB58_FA_1mm"
+    FSL_HCP1065_V2_1mm = FSLDIR + "/data/standard/FSL_HCP1065_V2_1mm"
+    MNI152_T1_1mm_Hipp_mask_dil8 = FSLDIR + "MNI152_T1_1mm_Hipp_mask_dil8/data/standard/"
+    MNI152_T1_2mm_VentricleMask = FSLDIR + "/data/standard/MNI152_T1_2mm_VentricleMask"
+    MNI152_T1_2mm_eye_mask = FSLDIR + "/data/standard/MNI152_T1_2mm_eye_mask"
+    FSL_HCP1065_FA_1mm = FSLDIR + "/data/standard/FSL_HCP1065_FA_1mm"
+    FSL_HCP1065_V3_1mm = FSLDIR + "/data/standard/FSL_HCP1065_V3_1mm"
+    MNI152_T1_1mm_brain = FSLDIR + "/data/standard/MNI152_T1_1mm_brain"
+    MNI152_T1_2mm_b0 = FSLDIR + "/data/standard/MNI152_T1_2mm_b0"
+    MNI152_T1_2mm_skull = FSLDIR + "/data/standard/MNI152_T1_2mm_skull"
+    FSL_HCP1065_L1_1mm = FSLDIR + "/data/standard/FSL_HCP1065_L1_1mm"
+    FSL_HCP1065_tensor_1mm = FSLDIR + "/data/standard/FSL_HCP1065_tensor_1mm"
+    MNI152_T1_1mm_brain_mask = FSLDIR + "/data/standard/MNI152_T1_1mm_brain_mask"
+    MNI152_T1_2mm_brain = FSLDIR + "/data/standard/MNI152_T1_2mm_brain"
+    MNI152_T1_2mm_strucseg = FSLDIR + "/data/standard/MNI152_T1_2mm_strucseg"
+    FSL_HCP1065_L2_1mm = FSLDIR + "/data/standard/FSL_HCP1065_L2_1mm"
+    Fornix_FMRIB_FA1mm = FSLDIR + "/data/standard/Fornix_FMRIB_FA1mm"
+    MNI152_T1_1mm_brain_mask_dil = FSLDIR + "/data/standard/MNI152_T1_1mm_brain_mask_dil"
+    MNI152_T1_2mm_brain_mask = FSLDIR + "/data/standard/MNI152_T1_2mm_brain_mask"
+    MNI152_T1_2mm_strucseg_periph = FSLDIR + "/data/standard/MNI152_T1_2mm_strucseg_periph"
+    FSL_HCP1065_L3_1mm = FSLDIR + "/data/standard/FSL_HCP1065_L3_1mm"
+    LowerCingulum_1mm = FSLDIR + "/data/standard/LowerCingulum_1mm"
+    MNI152_T1_1mm_first_brain_mask = FSLDIR + "/data/standard/MNI152_T1_1mm_first_brain_mask"
+    MNI152_T1_2mm_brain_mask_deweight_eyes = FSLDIR + "/data/standard/MNI152_T1_2mm_brain_mask_deweight_eyes"
+    FSL_HCP1065_MD_1mm = FSLDIR + "/data/standard/FSL_HCP1065_MD_1mm"
+    MNI152_T1_05mm = FSLDIR + "/data/standard/MNI152_T1_0.5mm"
+    MNI152_T1_1mm_subbr_mask = FSLDIR + "/data/standard/MNI152_T1_1mm_subbr_mask"
+    MNI152_T1_2mm_brain_mask_dil = FSLDIR + "/data/standard/MNI152_T1_2mm_brain_mask_dil"
+    FSL_HCP1065_MO_1mm = FSLDIR + "/data/standard/FSL_HCP1065_MO_1mm"
+    MNI152_T1_1mm = FSLDIR + "/data/standard/MNI152_T1_1mm"
+    MNI152_T1_2mm = FSLDIR + "/data/standard/MNI152_T1_2mm"
+    MNI152_T1_2mm_brain_mask_dil1 = FSLDIR + "/data/standard/MNI152_T1_2mm_brain_mask_dil1"
 
 
 class FeatSettings:
@@ -62,6 +101,8 @@ class FeatSettings:
         self.altRefImages = []
         self.b0fieldMaps = []
         self.b0Magnitudes = []
+        self.mainStructuralImages = []
+        self.expandedFunctionalImages = []
 
         if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
             raise PyFSFError("Level must be FeatLevel.HIGHER_LEVEL or FeatLevel.FIRST_LEVEL")
@@ -560,9 +601,9 @@ class PreStatsOptions:
             if usingAlternateReferenceImage:
                 raise PyFSFError("Must specify at least one alternate reference image if usingAlternateReferenceImage is set to True")
         else:
-            numAltImages = len(alternateReferenceImages)
-            # use up to the first 3 reference images provided
-            for i in range(0, min(3, numAltImages)):
+            if not len(alternateReferenceImages) == len(self.parent.inputs):
+                raise PyFSFError("Number of alternate reference images does not match number of inputs")
+            for i in range(0, len(self.parent.inputs)):
                 self.parent.altRefImages.append(alternateReferenceImages[i])
 
         self.CONFIGURED = True
@@ -579,14 +620,16 @@ class PreStatsOptions:
             raise PyFSFError("The Pre-Stats options have not been configured. Use PreStatsOptions.Configure()")
         if fieldmapImages in [[], None]:
             raise PyFSFError("Error: specify fieldmap images")
+        elif not len(fieldmapImages) == len(self.parent.inputs):
+            raise PyFSFError("Number of fieldmap images does not match number of inputs")
         if fieldmapMagnitudeImages in [[], None]:
             raise PyFSFError("Error: specify fieldmap magnitude images")
+        elif not len(fieldmapMagnitudeImages) == len(self.parent.inputs):
+            raise PyFSFError("Number of fieldmap magnitude images does not match number of inputs")
 
-        numFieldMapImages = len(fieldmapImages)
-        for i in range(0, min(3, numFieldMapImages)):
+        for i in range(0, len(self.parent.inputs)):
             self.parent.b0fieldMaps.append(fieldmapImages[i])
-        numMagnitudeImages = len(fieldmapMagnitudeImages)
-        for i in range(0, min(3, numMagnitudeImages)):
+        for i in range(0, len(self.parent.inputs)):
             self.parent.b0Magnitudes.append(fieldmapMagnitudeImages[i])
 
         if epiDwell is None:
@@ -634,8 +677,146 @@ class PreStatsOptions:
 class RegOptions:
     def __init__(self, parent):
         self.parent = parent
-    def Configure(self, mainStructuralImages, # list of filepaths
+        if "reghighres_search" in self.parent.defaults:
+            self.DEFAULT_MAIN_STRUCTURAL_SEARCH = int(self.parent.defaults["reghighres_search"])
+        if "reghighres_dof" in self.parent.defaults:
+            self.DEFAULT_MAIN_STRUCTURAL_DOF = int(self.parent.defaults["reghighres_dof"])
+        if "initial_highres_search" in self.parent.defaults:
+            self.DEFAULT_EXPANDED_FUNCTIONAL_SEARCH = int(self.parent.defaults["initial_highres_search"])
+        if "initial_highres_dof" in self.parent.defaults:
+            self.DEFAULT_EXPANDED_FUNCTIONAL_DOF = int(self.parent.defaults["initial_highres_dof"])
+        if "regstandard" in self.parent.defaults:
+            self.DEFAULT_STANDARD = self.parent.defaults["regstandard"]
+        if "regstandard_search" in self.parent.defaults:
+            self.DEFAULT_STANDARD_SEARCH = int(self.parent.defaults["regstandard_search"])
+        if "regstandard_dof" in self.parent.defaults:
+            self.DEFAULT_STANDARD_DOF = int(self.parent.defaults["regstandard_dof"])
+        if "regstandard_nonlinear_yn" in self.parent.defaults:
+            if int(self.parent.defaults["regstandard_nonlinear_yn"]) == 1:
+                self.DEFAULT_STANDARD_NONLINEAR = True
+            else:
+                self.DEFAULT_STANDARD_NONLINEAR = False
+        if "regstandard_nonlinear_warpres" in self.parent.defaults:
+            self.DEFAULT_STANDARD_WARPRES = int(self.parent.defaults["regstandard_nonlinear_warpres"])
+
+
+    def ConfigureMainStructural(self, mainStructuralImages, # list of filepaths
                    mainStructuralRegSearch = None, # int
-                   mainStructuralDOF = None # int
+                   mainStructuralDOF = None # string
                   ):
-        pass
+        if mainStructuralImages in [[],None]:
+            raise PyFSFError("No structural images were provided!")
+        elif not len(mainStructuralImages) == len(self.parent.inputs):
+            raise PyFSFError("Number of main structural images does not match number of inputs")
+
+        for i in range(len(self.parent.inputs)):
+            self.parent.mainStructuralImages.append(mainStructuralImages[i])
+
+        if mainStructuralRegSearch is None:
+            if hasattr(self, 'DEFAULT_MAIN_STRUCTURAL_SEARCH'):
+                mainStructuralRegSearch = self.DEFAULT_MAIN_STRUCTURAL_SEARCH
+            else:
+                raise PyFSFError("No search strategy was selected for main structural image registration, and none was found in defaults")
+        else:
+            if mainStructuralRegSearch not in RegistrationSearch.Options:
+                raise PyFSFError("mainStructuralRegSearch must be in RegistrationSearch.Options")
+        self.parent.settings["reghighres_search"] = mainStructuralRegSearch
+
+        if mainStructuralDOF is None:
+            if hasattr(self, 'DEFAULT_MAIN_STRUCTURAL_DOF'):
+                mainStructuralDOF = self.DEFAULT_MAIN_STRUCTURAL_DOF
+            else:
+                raise PyFSFError("No DOF for main structural registration was provided and none was found in defaults.")
+        else:
+            if not mainStructuralDOF == "BBR":
+                raise PyFSFError("Only 'BBR' option is currently allowed for DOF for main structural registration")
+        self.parent.settings["reghighres_dof"] = mainStructuralDOF
+
+    def ConfigureExpandedFunctional(self, expandedFunctionalImages,
+                                    expandedFunctionalSearch = None,
+                                    expandedFunctionalDOF = None):
+
+        if expandedFunctionalImages in [[],None]:
+            raise PyFSFError("No structural images were provided!")
+        elif not len(expandedFunctionalImages) == len(self.parent.inputs):
+            raise PyFSFError("Number of expanded functional images does not match number of inputs")
+
+        for i in range(len(self.parent.inputs)):
+            self.parent.expandedFunctionalImages.append(expandedFunctionalImages[i])
+
+        if expandedFunctionalSearch is None:
+            if hasattr(self, 'DEFAULT_EXPANDED_FUNCTIONAL_SEARCH'):
+                expandedFunctionalSearch = self.DEFAULT_EXPANDED_FUNCTIONAL_SEARCH
+            else:
+                raise PyFSFError("No search strategy was selected for expanded functional image registration, and none was found in defaults")
+        else:
+            if expandedFunctionalSearch not in RegistrationSearch.Options:
+                raise PyFSFError("mainStructuralRegSearch must be in RegistrationSearch.Options")
+        self.parent.settings["initial_highres_search"] = expandedFunctionalSearch
+
+        if expandedFunctionalDOF is None:
+            if hasattr(self, 'DEFAULT_EXPANDED_FUNCTIONAL_DOF'):
+                expandedFunctionalDOF = self.DEFAULT_EXPANDED_FUNCTIONAL_DOF
+            else:
+                raise PyFSFError("No DOF for main structural registration was provided and none was found in defaults.")
+        else:
+            if expandedFunctionalDOF not in RegistrationDOF.Options:
+                raise PyFSFError("Expanded functional DOF must be 3,6,7,9 or 12")
+        self.parent.settings["initial_highres_dof"] = expandedFunctionalDOF
+
+    def ConfigureStandardSpace(self, standardImage = None, # filepath
+                               standardSearch = None, # int
+                               standardDOF = None, # int
+                               doNonlinear = None, # bool
+                               warpResolution = None # int
+                               ):
+        if standardImage is None:
+            if hasattr(self,'DEFAULT_STANDARD'):
+                standardImage = self.DEFAULT_STANDARD
+            else:
+                raise PyFSFError("No standard image was specified and none was found in defaults")
+        self.parent.settings["regstandard"] = standardImage
+
+        if standardSearch is None:
+            if hasattr(self, 'DEFAULT_STANDARD_SEARCH'):
+                standardSearch = self.DEFAULT_STANDARD_SEARCH
+            else:
+                raise PyFSFError("No standard search was specified and none was found in defaults")
+        else:
+            if standardSearch not in RegistrationSearch.Options:
+                raise PyFSFError("standardSearch must be in RegistrationSearch.Options: 0, 90 or 180")
+        self.parent.settings["regstandard_search"] = standardSearch
+
+        if standardDOF is None:
+            if hasattr(self, 'DEFAULT_STANDARD_DOF'):
+                standardDOF = self.DEFAULT_STANDARD_DOF
+            else:
+                raise PyFSFError("No standard DOF was specified and none was found in defaults")
+        else:
+            if standardDOF not in RegistrationDOF.Options:
+                raise PyFSFError("Standard DOF must be in RegistrationDOF.Options")
+        self.parent.settings["regstandard_dof"] = standardDOF
+
+        if doNonlinear is None:
+            if hasattr(self, 'DEFAULT_STANDARD_NONLINEAR'):
+                doNonlinear = self.DEFAULT_STANDARD_NONLINEAR
+            else:
+                doNonlinear = False
+        else:
+            if doNonlinear not in [True,False]:
+                raise PyFSFError("doNonLinear must be bool")
+        self.parent.settings["regstandard_nonlinear_yn"] = doNonlinear
+
+        if doNonlinear:
+            if warpResolution is None:
+                if hasattr(self, 'DEFAULT_WARPRES')
+                    warpResolution = self.DEFAULT_WARPRES
+                else:
+                    raise PyFSFError("No Warp Resolution was specified and none was found in defaults, but Nonlinear registration is on!")
+            else:
+                try:
+                    int(warpResolution)
+                except ValueError:
+                    raise PyFSFError("Warp resolution must be int")
+            self.parent.settings["regstandard_nonlinear_warpres"]
+
