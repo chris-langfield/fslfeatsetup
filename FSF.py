@@ -3,6 +3,19 @@ import re
 import subprocess
 import fsl
 
+class PyFSFError(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return self.message
+        else:
+            return 'Generic error'
+
 # get $HOME
 
 HOME = os.getenv("HOME")
@@ -13,8 +26,8 @@ FSLDIR = os.getenv("FSLDIR")
 if FSLDIR:
     print("$FSLDIR:",FSLDIR)
 else:
-    print("[!] Could not find environment variable $FSLDIR. Is FSL installed?")
-    exit()
+    raise PyFSFError("[!] Could not find environment variable $FSLDIR. Is FSL installed?")
+
 
 ## get FEAT version
 FEATLIB_PATH = os.path.join(FSLDIR, "src/feat5/featlib.tcl")
@@ -35,18 +48,7 @@ DEFAULT_SETTINGS_PATH = os.path.join(FSLDIR,"etc/fslconf/feat.tcl")
 if not os.path.exists(DEFAULT_SETTINGS_PATH):
     print("Warning: default FEAT settings ($FSLDIR/etc/fslconf/feat.tcl does not exist. Defaults will not be loaded.")
 
-class PyFSFError(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
-        else:
-            self.message = None
 
-    def __str__(self):
-        if self.message:
-            return 'PyFSFError: ' + self.message
-        else:
-            return 'PyFSFError: '
 
 class FeatLevel:
     FIRST_LEVEL = 1
@@ -57,15 +59,15 @@ FeatLevelToStr = {
     FeatLevel.HIGHER_LEVEL:"Higher-level analysis"
 }
 
-class FeatStages:
+class FeatAnalysis:
     FULL_ANALYSIS = 7
     PREPROCESSING = 1
     STATS = 2
 
-FeatStagesToStr = {
-    FeatStages.STATS:"Stats",
-    FeatStages.PREPROCESSING:"Pre-processing",
-    FeatStages.FULL_ANALYSIS:"Full analysis"
+FeatAnalysisToStr = {
+    FeatAnalysis.STATS:"Stats",
+    FeatAnalysis.PREPROCESSING:"Pre-processing",
+    FeatAnalysis.FULL_ANALYSIS:"Full analysis"
 }
 
 class FeatSliceTiming:
@@ -96,7 +98,9 @@ class FeatHigherLevelInput:
     COPE_IMAGES = 2
 
 class FeatSettings:
-    def __init__(self, LEVEL, ANALYSIS, defaultsFilename=DEFAULT_SETTINGS_PATH):
+    def __init__(self, LEVEL, # int
+                 ANALYSIS,  # int
+                 defaultsFilename=DEFAULT_SETTINGS_PATH): # filepath
 
         self.settings = {}
         self.defaults = {}
@@ -105,8 +109,11 @@ class FeatSettings:
         self.b0fieldMaps = []
         self.b0Magnitudes = []
 
-        # must be set
+        if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
+            raise PyFSFError("Level must be FeatLevel.HIGHER_LEVEL or FeatLevel.FIRST_LEVEL")
         self.LEVEL = LEVEL
+        if ANALYSIS not in [FeatAnalysis.STATS, FeatAnalysis.PREPROCESSING, FeatAnalysis.FULL_ANALYSIS]:
+            raise PyFSFError("Analysis must be FeatAnalysis.STATS, FeatAnalysis.PREPROCESSING, or FeatAnalysis.FULL_ANALYSIS")
         self.ANALYSIS = ANALYSIS
         self.settings["level"] = LEVEL
         self.settings["analysis"] = ANALYSIS
@@ -147,25 +154,46 @@ class DataOptions:
         self.parent = myFeatSettings
         # default
         if "paradigm_hp" in self.parent.defaults:
-            self.DEFAULT_HIGHPASS_CUTOFF = self.parent.defaults["paradigm_hp"]
+            self.DEFAULT_HIGHPASS_CUTOFF = int(self.parent.defaults["paradigm_hp"])
         if "ndelete" in self.parent.defaults:
             self.DEFAULT_DELETE_VOLUMES = self.parent.defaults["ndelete"]
 
-    def Configure(self, outputDirectory, inputPaths, totalVolumes=-1, deleteVolumes = -1, tr =-1, highPassCutoff = -1, higherLevelInput = FeatHigherLevelInput.COPE_IMAGES):
+    def Configure(self, outputDirectory, # filepath
+                  inputPaths,  # list of filepaths
+                  totalVolumes=-1,  # int
+                  deleteVolumes = -1, # int
+                  tr =-1, # int
+                  highPassCutoff = -1, # int
+                  higherLevelInput = FeatHigherLevelInput.COPE_IMAGES): # int
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+
+            if not os.path.exists(inputPaths[0]):
+                raise PyFSFError(inputPaths[0] + " does not exist!")
 
             if not tr == -1:
                 print("TR specified by user. Will not get TR from input image")
+                try:
+                    int(tr)
+                except ValueError:
+                    raise PyFSFError("TR must be int")
                 self.parent.settings["tr"] = tr
             else:
                 tr = subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " pixdim4"])
+                if "Exception" in tr:
+                    raise PyFSFError("Could not get TR from input image. fslval output: " + tr)
                 self.parent.settings["tr"] = float(tr.replace("\n","").strip())
                 print("TR is ", tr.replace("\n","").strip())
             if not totalVolumes == -1:
                 print("Number of volumes specified by user. Will not get TR from input image")
+                try:
+                    int(totalVolumes)
+                except ValueError:
+                    raise PyFSFError("Total volumes must be int")
                 self.parent.settings["npts"] = totalVolumes
             else:
                 totalVolumes = subprocess.getoutput([FSLDIR + "/bin/fslnvols " + inputPaths[0]])
+                if "Exception" in totalVolumes:
+                    raise PyFSFError("Could not get number of volumes from input images. fslnvols output: " + totalVolumes)
                 self.parent.settings["npts"] = int(totalVolumes.replace("\n","").strip())
                 print("Total volumes are", totalVolumes.replace("\n","").strip())
 
@@ -174,6 +202,11 @@ class DataOptions:
                     deleteVolumes = self.DEFAULT_DELETE_VOLUMES
                 else:
                     deleteVolumes = 0
+            else:
+                try:
+                    int(deleteVolumes)
+                except ValueError:
+                    raise PyFSFError("Number of deleted volumes must be int")
             self.parent.settings["ndelete"] = deleteVolumes
 
             if highPassCutoff == -1:
@@ -181,6 +214,7 @@ class DataOptions:
                     highPassCutoff = self.DEFAULT_HIGHPASS_CUTOFF
                 else:
                     highPassCutoff = 100
+            else try:
             self.parent.settings["paradigm_hp"] = highPassCutoff
 
         elif self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
@@ -213,7 +247,7 @@ class DataOptions:
 
     def printSettings(self):
         print("Data Settings: " + self.parent.settings["outputdir"])
-        print(FeatLevelToStr[self.parent.LEVEL], "|", FeatStagesToStr[self.parent.ANALYSIS])
+        print(FeatLevelToStr[self.parent.LEVEL], "|", FeatAnalysisToStr[self.parent.ANALYSIS])
         print("--------------")
         print("Number of inputs:", self.parent.settings["multiple"])
         print("Total volumes:", self.parent.settings["npts"])
@@ -299,7 +333,7 @@ class MiscOptions:
 
     def printSettings(self):
         print("Misc Settings: " + self.parent.settings["outputdir"])
-        print(FeatLevelToStr[self.parent.LEVEL], "|", FeatStagesToStr[self.parent.ANALYSIS])
+        print(FeatLevelToStr[self.parent.LEVEL], "|", FeatAnalysisToStr[self.parent.ANALYSIS])
         print("--------------")
         print("Brain/background threshold:", self.parent.settings["brain_thresh"])
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
@@ -506,14 +540,11 @@ class PreStatsOptions:
                   signalLoss = None, # int
                   ):
         if not self.CONFIGURED:
-            print("Error: The Pre-Stats options have not been configured. Use PreStatsOptions.Configure()")
-            return
+            raise PyFSFError("The Pre-Stats options have not been configured. Use PreStatsOptions.Configure()")
         if fieldmapImages in [[], None]:
-            print("Error: specify fieldmap images")
-            return
+            raise PyFSFError("Error: specify fieldmap images")
         if fieldmapMagnitudeImages in [[], None]:
-            print("Error: specify fieldmap magnitude images")
-            return
+            raise PyFSFError("Error: specify fieldmap magnitude images")
 
         numFieldMapImages = len(fieldmapImages)
         for i in range(0, min(3, numFieldMapImages)):
