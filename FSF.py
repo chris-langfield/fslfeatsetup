@@ -35,6 +35,18 @@ DEFAULT_SETTINGS_PATH = os.path.join(FSLDIR,"etc/fslconf/feat.tcl")
 if not os.path.exists(DEFAULT_SETTINGS_PATH):
     print("Warning: default FEAT settings ($FSLDIR/etc/fslconf/feat.tcl does not exist. Defaults will not be loaded.")
 
+class PyFSFError(Exception):
+    def __init__(self, *args):
+        if args:
+            self.message = args[0]
+        else:
+            self.message = None
+
+    def __str__(self):
+        if self.message:
+            return 'PyFSFError: ' + self.message
+        else:
+            return 'PyFSFError: '
 
 class FeatLevel:
     FIRST_LEVEL = 1
@@ -90,6 +102,8 @@ class FeatSettings:
         self.defaults = {}
         self.inputs = []
         self.altRefImages = []
+        self.b0fieldMaps = []
+        self.b0Magnitudes = []
 
         # must be set
         self.LEVEL = LEVEL
@@ -483,3 +497,55 @@ class PreStatsOptions:
 
         self.CONFIGURED = True
 
+    def Unwarping(self,
+                  fieldmapImages, # list of paths
+                  fieldmapMagnitudeImages, # list of magnitudes
+                  epiDwell = None, # float
+                  epiTE = None, # float
+                  unwarpDir = None, # string
+                  signalLoss = None, # int
+                  ):
+        if not self.CONFIGURED:
+            print("Error: The Pre-Stats options have not been configured. Use PreStatsOptions.Configure()")
+            return
+        if fieldmapImages in [[], None]:
+            print("Error: specify fieldmap images")
+            return
+        if fieldmapMagnitudeImages in [[], None]:
+            print("Error: specify fieldmap magnitude images")
+            return
+
+        numFieldMapImages = len(fieldmapImages)
+        for i in range(0, min(3, numFieldMapImages)):
+            self.parent.b0fieldMaps.append(fieldmapImages[i])
+        numMagnitudeImages = len(fieldmapMagnitudeImages)
+        for i in range(0, min(3, numMagnitudeImages)):
+            self.parent.b0Magnitudes.append(fieldmapMagnitudeImages[i])
+
+        if epiDwell is None:
+            if hasattr(self, 'DEFAULT_EPI_DWELL'):
+                epiDwell = self.DEFAULT_EPI_DWELL
+            else:
+                epiDwell = 0.0
+        self.parent.settings["dwell"] = epiDwell
+
+        if epiTE is None:
+            if hasattr(self, 'DEFAULT_EPI_TE'):
+                epiTE = self.DEFAULT_EPI_TE
+            else:
+                epiTE = 0.0
+        self.parent.settings["te"] = epiTE
+
+        if signalLoss is None:
+            if hasattr(self,'DEFAULT_SIGNAL_LOSS'):
+                signalLoss = self.DEFAULT_SIGNAL_LOSS
+            else:
+                signalLoss = 10
+        self.parent.settings["signallossthresh"] = signalLoss
+
+        if unwarpDir is None:
+            if hasattr(self, 'DEFAULT_UNWARP_DIR'):
+                unwarpDir = self.DEFAULT_UNWARP_DIR
+            else:
+                unwarpDir = FeatUnwarp.Y_MINUS
+        self.parent.settings["unwarp_dir"] = unwarpDir
