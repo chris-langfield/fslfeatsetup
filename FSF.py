@@ -463,7 +463,7 @@ class PreStatsOptions:
                   spatialSmoothing = -1.0, # float
                   intensityNormalization = None, # bool
                   perfusionSubtraction = None, # bool
-                  perfusionTagControlOrder = -1, # int
+                  perfusionTagControlOrder = None, # int
                   highPassTemporalFilter = None, # bool
                   lowPassTemporalFilter = None, # bool
                   usingAlternateReferenceImage = None, # bool
@@ -532,7 +532,7 @@ class PreStatsOptions:
         self.parent.settings["smooth"] = spatialSmoothing
 
         if sliceTimingFile is None:
-            if not self.parent.settings["st"] not in [FeatSliceTiming.NONE, FeatSliceTiming.INTERLEAVED, FeatSliceTiming.REGULAR_DOWN, FeatSliceTiming.REGULAR_UP]:
+            if self.parent.settings["st"] not in [FeatSliceTiming.NONE, FeatSliceTiming.INTERLEAVED, FeatSliceTiming.REGULAR_DOWN, FeatSliceTiming.REGULAR_UP]:
                 raise PyFSFError("Slice timing or slice order file is required")
         else:
             self.parent.settings["st_file"] = sliceTimingFile
@@ -680,7 +680,7 @@ class RegOptions:
         if "reghighres_search" in self.parent.defaults:
             self.DEFAULT_MAIN_STRUCTURAL_SEARCH = int(self.parent.defaults["reghighres_search"])
         if "reghighres_dof" in self.parent.defaults:
-            self.DEFAULT_MAIN_STRUCTURAL_DOF = int(self.parent.defaults["reghighres_dof"])
+            self.DEFAULT_MAIN_STRUCTURAL_DOF = self.parent.defaults["reghighres_dof"]
         if "initial_highres_search" in self.parent.defaults:
             self.DEFAULT_EXPANDED_FUNCTIONAL_SEARCH = int(self.parent.defaults["initial_highres_search"])
         if "initial_highres_dof" in self.parent.defaults:

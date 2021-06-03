@@ -4,3 +4,4 @@ design.fsf
 FSF.pyc
 *.pyc
 .DS_Store
+sampledata/ExBox11/*
