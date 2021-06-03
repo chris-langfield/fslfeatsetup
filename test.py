@@ -1,3 +1,9 @@
+# Test script and example of use
+#
+# Test data is not in repo but can be downloaded from:
+# https://www.fmrib.ox.ac.uk/primers/intro_primer/ExBox11/IntroBox11.html
+
+
 from FSF import *
 
 outputDir = "test.feat"
