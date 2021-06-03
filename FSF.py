@@ -809,7 +809,7 @@ class RegOptions:
 
         if doNonlinear:
             if warpResolution is None:
-                if hasattr(self, 'DEFAULT_WARPRES')
+                if hasattr(self, 'DEFAULT_WARPRES'):
                     warpResolution = self.DEFAULT_WARPRES
                 else:
                     raise PyFSFError("No Warp Resolution was specified and none was found in defaults, but Nonlinear registration is on!")
