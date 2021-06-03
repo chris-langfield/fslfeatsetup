@@ -110,28 +110,40 @@ class DataOptions:
         # default
         if "paradigm_hp" in self.parent.defaults:
             self.DEFAULT_HIGHPASS_CUTOFF = self.parent.defaults["paradigm_hp"]
+        if "ndelete" in self.parent.defaults:
+            self.DEFAULT_DELETE_VOLUMES = self.parent.defaults["ndelete"]
 
     def Configure(self, outputDirectory, inputPaths, totalVolumes=-1, deleteVolumes = -1, tr =-1, highPassCutoff = -1, higherLevelInput = FeatHigherLevelInput.COPE_IMAGES):
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+
             if not tr == -1:
                 print("TR specified by user. Will not get TR from input image")
+                self.parent.settings["tr"] = tr
             else:
                 tr = subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " pixdim4"])
                 self.parent.settings["tr"] = float(tr.replace("\n","").strip())
                 print("TR is ", tr.replace("\n","").strip())
             if not totalVolumes == -1:
                 print("Number of volumes specified by user. Will not get TR from input image")
+                self.parent.settings["npts"] = totalVolumes
             else:
                 totalVolumes = subprocess.getoutput([FSLDIR + "/bin/fslnvols " + inputPaths[0]])
                 self.parent.settings["npts"] = int(totalVolumes.replace("\n","").strip())
                 print("Total volumes are", totalVolumes.replace("\n","").strip())
-            if not deleteVolumes == -1:
-                self.parent.settings["ndelete"] = deleteVolumes
+
+            if deleteVolumes == -1:
+                if hasattr(self, 'DEFAULT_DELETE_VOLUMES'):
+                    deleteVolumes = self.DEFAULT_DELETE_VOLUMES
+                else:
+                    deleteVolumes = 0
+            self.parent.settings["ndelete"] = deleteVolumes
+
             if highPassCutoff == -1:
                 if hasattr(self, 'DEFAULT_HIGHPASS_CUTOFF'):
-                    self.parent.settings["paradigm_hp"] = self.DEFAULT_HIGHPASS_CUTOFF
+                    highPassCutoff = self.DEFAULT_HIGHPASS_CUTOFF
                 else:
-                    self.parent.settings["paradigm_hp"] = 100
+                    highPassCutoff = 100
+            self.parent.settings["paradigm_hp"] = highPassCutoff
 
         elif self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
             self.parent.settings["inputtype"] = higherLevelInput
@@ -147,7 +159,8 @@ class DataOptions:
 
 
         ## voxel size
-        dim1 = int(subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+        dim1 = int(
+            subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
         dim2 = int(
             subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
         dim3 = int(
