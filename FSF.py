@@ -56,6 +56,29 @@ FeatStagesToStr = {
     FeatStages.FULL_ANALYSIS:"Full analysis"
 }
 
+class FeatSliceTiming:
+    NONE = 0
+    REGULAR_UP = 1
+    REGULAR_DOWN = 2
+    ORDER_FILE = 3
+    TIMING_FILE = 4
+    INTERLEAVED = 5
+    Options = [NONE, REGULAR_UP, REGULAR_DOWN, ORDER_FILE, TIMING_FILE, INTERLEAVED]
+
+class FeatPerfusion:
+    FirstTimepointIsTag = 0
+    FirstTimepointIsControl = 1
+    Options = [FirstTimepointIsTag, FirstTimepointIsControl]
+
+class FeatUnwarp:
+    X_MINUS = "x-"
+    X_PLUS = "x+"
+    Y_MINUS = "y-"
+    Y_PLUS = "y+"
+    Z_MINUS = "z-"
+    Z_PLUS = "z+"
+    Directions = [X_PLUS,X_MINUS,Y_PLUS,Y_MINUS,Z_PLUS,Z_MINUS]
+
 class FeatHigherLevelInput:
     FEAT_DIRS = 1
     COPE_IMAGES = 2
@@ -66,6 +89,7 @@ class FeatSettings:
         self.settings = {}
         self.defaults = {}
         self.inputs = []
+        self.altRefImages = []
 
         # must be set
         self.LEVEL = LEVEL
@@ -249,13 +273,13 @@ class MiscOptions:
                 else:
                     cleanupFirstLevel = False
             self.parent.settings["sscleanup"] = int(cleanupFirstLevel)
-            
+
             if overwriteOriginalPostStats is None:
                 if hasattr(self, 'DEFAULT_OVERWRITE_POSTSTATS'):
                     overwriteOriginalPostStats = self.DEFAULT_OVERWRITE_POSTSTATS
                 else:
                     overwriteOriginalPostStats = False
-            self.
+            self.parent.settings["newdir_yn"] = overwriteOriginalPostStats
 
 
 
@@ -274,6 +298,188 @@ class MiscOptions:
 
 
 class PreStatsOptions:
-    def __init__(self):
-        pass
+    def __init__(self, myFeatSettings):
+        self.parent = myFeatSettings
+        self.CONFIGURED = False
+        # default
+        if "dwell" in self.parent.defaults:
+            self.DEFAULT_EPI_DWELL = float(self.parent.defaults["dwell"])
+        if "te" in self.parent.defaults:
+            self.DEFAULT_EPI_TE = float(self.parent.defaults["te"])
+        if "signallossthresh" in self.parent.defaults:
+            self.DEFAULT_SIGNAL_LOSS = float(self.parent.defaults["signallossthresh"])
+        if "smooth" in self.parent.defaults:
+            self.DEFAULT_SMOOOTH = float(self.parent.defaults["smooth"])
+        if "unwarp_dir" in self.parent.defaults:
+            if self.parent.defaults["unwarp_dir"] in FeatUnwarp.Directions:
+                self.DEFAULT_UNWARP_DIR = self.parent.defaults["unwarp_dir"]
+        if "st" in self.parent.defaults:
+            if int(self.parent.defaults["st"]) in FeatSliceTiming.Options:
+                self.DEFAULT_SLICE_TIMING = int(self.parent.defaults["st"])
+        if "mc" in self.parent.defaults:
+            if int(self.parent.defaults["mc"]) == 1:
+                self.DEFAULT_MCFLIRT = True
+            else:
+                self.DEFAULT_MCFLIRT = False
+        if "regunwarp_yn" in self.parent.defaults:
+            if int(self.parent.defaults["regunwarp_yn"]) == 1:
+                self.DEFAULT_B0_UNWARP = True
+            else:
+                self.DEFAULT_B0_UNWARP = False
+        if "alternateReference_yn" in self.parent.defaults:
+            if int(self.parent.defaults["alternateReference_yn"]) == 1:
+                self.DEFAULT_ALT_REF_IMG = True
+            else:
+                self.DEFAULT_ALT_REF_IMG = False
+        if "bet_yn" in self.parent.defaults:
+            if int(self.parent.defaults["bet_yn"]) == 1:
+                self.DEFAULT_BET = True
+            else:
+                self.DEFAULT_BET = False
+        if "norm_yn" in self.parent.defaults:
+            if int(self.parent.defaults["norm_yn"]) == 1:
+                self.DEFAULT_NORM = True
+            else:
+                self.DEFAULT_NORM = False
+        if "perfsub_yn" in self.parent.defaults:
+            if int(self.parent.defaults["perfsub_yn"]) == 1:
+                self.DEFAULT_PERFSUB = True
+            else:
+                self.DEFAULT_PERFSUB = False
+        if "tagfirst" in self.parent.defaults:
+            if int(self.parent.defaults["tagfirst"]) in FeatPerfusion.Options:
+                self.DEFAULT_PERF_TAGFIRST = int(self.parent.defaults["tagfirst"])
+        if "temphp_yn" in self.parent.defaults:
+            if int(self.parent.defaults["temphp_yn"]) == 1:
+                self.DEFAULT_TEMPORAL_HIGHPASS = True
+            else:
+                self.DEFAULT_TEMPORAL_HIGHPASS = False
+        if "templp_yn" in self.parent.defaults:
+            if int(self.parent.defaults["templp_yn"]) == 1:
+                self.DEFAULT_TEMPORAL_LOWPASS = True
+            else:
+                self.DEFAULT_TEMPORAL_LOWPASS = False
+        if "melodic_yn" in self.parent.defaults:
+            if int(self.parent.defaults["melodic_yn"]) == 1:
+                self.DEFAULT_MELODIC = True
+            else:
+                self.DEFAULT_MELODIC = False
+
+    def Configure(self,
+                  mcflirt = None, # bool
+                  b0_unwarp = None, # bool
+                  melodic = None, # bool
+                  sliceTiming = None, # int
+                  sliceTimingFile = None, # filepath
+                  bet = None, # bool
+                  spatialSmoothing = -1.0, # float
+                  intensityNormalization = None, # bool
+                  perfusionSubtraction = None, # bool
+                  perfusionTagControlOrder = -1, # int
+                  highPassTemporalFilter = None, # bool
+                  lowPassTemporalFilter = None, # bool
+                  usingAlternateReferenceImage = None, # bool
+                  alternateReferenceImages = None): ## list of paths
+
+        if mcflirt is None:
+            if hasattr(self, 'DEFAULT_MCFLIRT'):
+                mcflirt = self.DEFAULT_MCFLIRT
+            else:
+                mcflirt = 0
+        self.parent.settings["mc"] = mcflirt
+
+        if b0_unwarp is None:
+            if hasattr(self, 'DEFAULT_B0_UNWARP'):
+                b0_unwarp = self.DEFAULT_B0_UNWARP
+            else:
+                b0_unwarp = False
+        self.parent.settings["regunwarp_yn"] = b0_unwarp
+
+        if melodic is None:
+            if hasattr(self, 'DEFAULT_MELODIC'):
+                melodic = self.DEFAULT_MELODIC
+            else:
+                melodic = False
+        self.parent.settings["melodic_yn"] = melodic
+
+        if sliceTiming is None:
+            if hasattr(self, 'DEFAULT_SLICE_TIMING'):
+                sliceTiming = self.DEFAULT_SLICE_TIMING
+            else:
+                sliceTiming = FeatSliceTiming.NONE
+        self.parent.settings["st"] = sliceTiming
+
+        if bet is None:
+            if hasattr(self, 'DEFAULT_BET'):
+                bet = self.DEFAULT_BET
+            else:
+                bet = False
+        self.parent.settings["bet_yn"] = bet
+
+        if spatialSmoothing is None:
+            if hasattr(self, 'DEFAULT_SMOOTH'):
+                spatialSmoothing = self.DEFAULT_SMOOTH
+            else:
+                spatialSmoothing = 5.0
+        self.parent.settings["smooth"] = spatialSmoothing
+
+        if sliceTimingFile is None:
+            if not self.parent.settings["st"] not in [FeatSliceTiming.NONE, FeatSliceTiming.INTERLEAVED, FeatSliceTiming.REGULAR_DOWN, FeatSliceTiming.REGULAR_UP]:
+                print("Error: Slice timing or slice order file is required")
+                return
+        else:
+            self.parent.settings["st_file"] = sliceTimingFile
+
+        if intensityNormalization is None:
+            if hasattr(self, 'DEFAULT_NORM'):
+                intensityNormalization = self.DEFAULT_NORM
+            else:
+                intensityNormalization = False
+        self.parent.settings["norm_yn"] = intensityNormalization
+
+        if perfusionSubtraction is None:
+            if hasattr(self, 'DEFAULT_PERFSUB'):
+                perfusionSubtraction = self.DEFAULT_PERFSUB
+            else:
+                perfusionSubtraction = False
+        self.parent.settings["perfsub_yn"] = perfusionSubtraction
+
+        if perfusionTagControlOrder is None:
+            if hasattr(self, 'DEFAULT_PERF_TAGFIRST'):
+                perfusionTagControlOrder = self.DEFAULT_PERF_TAGFIRST
+            else:
+                perfusionTagControlOrder = FeatPerfusion.FirstTimepointIsTag
+        self.parent.settings["tagfirst"] = perfusionTagControlOrder
+
+        if highPassTemporalFilter is None:
+            if hasattr(self, 'DEFAULT_TEMPORAL_HIGHPASS'):
+                highPassTemporalFilter = self.DEFAULT_TEMPORAL_HIGHPASS
+            else:
+                highPassTemporalFilter = False
+        self.parent.settings["temphp_yn"] = highPassTemporalFilter
+
+        if lowPassTemporalFilter is None:
+            if hasattr(self, 'DEFAULT_TEMPORAL_LOWPASS'):
+                lowPassTemporalFilter = self.DEFAULT_TEMPORAL_LOWPASS
+            else:
+                loowPassTemporalFilter = False
+        self.parent.settings["templp_yn"] = lowPassTemporalFilter
+
+        if usingAlternateReferenceImage is None:
+            if hasattr(self, 'DEFAULT_ALT_REF_IMG'):
+                usingAlternateReferenceImage = self.DEFAULT_ALT_REF_IMG
+            else:
+                usingAlternateReferenceImage = False
+        self.parent.settings["alternativeReference_yn"] = usingAlternateReferenceImage
+
+        if alternateReferenceImages is None:
+            if usingAlternateReferenceImage:
+                print("Error: must specify at least one alternate reference image")
+        else:
+            numAltImages = len(alternateReferenceImages)
+            # use up to the first 3 reference images provided
+            for i in range(0, min(3, numAltImages)):
+                self.parent.altRefImages.append(alternateReferenceImages[i])
+
+        self.CONFIGURED = True
 
