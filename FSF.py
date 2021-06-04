@@ -171,8 +171,30 @@ class FeatSettings:
                     outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
                     outFile.write("set fmri(custom" + str(e+1) + ") " + self.EVs[e].filename + "\n\n")
                     orthoVector = self.Ortho[e]
-                    for o in range(len(orthoVector)):
-                        outFile.write(f"set fmri(ortho{e+1}.{o+1}) {orthoVector[o]}")
+
+                ## TODO: Lower-level Contrasts
+
+            if self.LEVEL == FeatLevel.HIGHER_LEVEL:
+                for e in range(len(self.EVs)):
+                    outFile.write("set fmri(evtitle" + str(e + 1) + ") \"" + self.EVs[e].name + "\"\n\n")
+                    for i in range(len(self.EVs[e].vector)):
+                        outFile.write(f"set fmri(evg{e+1}.{i+1}) {self.EVs[e].vector[i]}\n\n")
+
+                for g in range(len(self.GroupMembership)):
+                    outFile.write(f"set fmri(groupmem.{g+1}) {self.GroupMembership[g]}\n\n")
+
+                for c in range(len(self.Contrasts)):
+                    outFile.write(f"set fmri(conpic_real.{c+1}) 1")
+                    outFile.write(f"set fmri(conname_real.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
+                    for x in range(len(self.Contrasts[c].vector)):
+                        outFile.write(f"set fmri(con_real{c+1}.{x+1}) {self.Contrasts[c].vector[x]}\n\n")
+
+            # length of orthogonalization vector is number of EVs plus 1 because you have to account for the null event 0
+            for o in range(-1, len(orthoVector)):
+                outFile.write(f"set fmri(ortho{e + 1}.{o + 1}) {orthoVector[o]}")
+
+
+
 
 
 
@@ -887,4 +909,5 @@ class StatsOptions:
         self.parent.GroupMembership = vector
 
     def OrthogonalizeEVs(self, matrix):
+        ## matrix is a list of lists with length and with numberOfEVs + 1 because you have to include the null (0) EV
         self.parent.Ortho = matrix
