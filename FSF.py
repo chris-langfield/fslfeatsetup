@@ -99,6 +99,7 @@ class FeatSettings:
                  ANALYSIS,  # int
                  defaultsFilename=DEFAULT_SETTINGS_PATH): # filepath
 
+
         self.settings = {}
         self.defaults = {}
         self.inputs = []
@@ -210,6 +211,10 @@ class FeatSettings:
 
 
 class DataOptions:
+    """
+    Must be a child object of a FeatSettings instance
+    This child must be created and configured before the others
+    """
     def __init__(self, myFeatSettings):
         self.parent = myFeatSettings
         # default
@@ -225,6 +230,18 @@ class DataOptions:
                   tr =-1, # int
                   highPassCutoff = -1, # int
                   higherLevelInput = FeatHigherLevelInput.COPE_IMAGES): # int
+        """
+        Takes parameters corresponding to the "Data" tab in the FEAT GUI. It then updates the settings list of its FeatSettings parent class.
+        :param outputDirectory: Mandatory .feat or .gfeat path
+        :param inputPaths: Mandatory list of input filepaths
+        :param totalVolumes: Optional number of volumes per input. Can be inferred if left blank.
+        :param deleteVolumes: Optional number of volumes to delete. Will be set to default found in defaults file, or otherwise set to 0
+        :param tr: Optional TR of input images. Can be inferred if left blank.
+        :param highPassCutoff: Optional, unless default file does not contain this setting
+        :param higherLevelInput: Optional, for higher-level analyses only. Can be set to 1 (lower-level feat directories) or 2 (lower level cope images),
+        or using the built-in type FeatHigherLevelInput.FEAT_DIRS or FeatHigherLevelInput.COPE_IMAGES
+        :return: None
+        """
 
         if inputPaths in [[], None]:
             raise PyFSFError("No inputs were provided!")
