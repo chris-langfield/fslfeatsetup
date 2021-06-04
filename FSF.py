@@ -2,6 +2,7 @@ import os
 import re
 import subprocess
 from FSFLabels import *
+from EVs import *
 import fsl
 
 class PyFSFError(Exception):
@@ -104,6 +105,8 @@ class FeatSettings:
         self.mainStructuralImages = []
         self.expandedFunctionalImages = []
 
+        self.EVs = []
+
         if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
             raise PyFSFError("Level must be FeatLevel.HIGHER_LEVEL or FeatLevel.FIRST_LEVEL")
         self.LEVEL = LEVEL
@@ -177,7 +180,7 @@ class DataOptions:
                     raise PyFSFError("TR must be int")
                 self.parent.settings["tr"] = tr
             else:
-                tr = subprocess.getoutput([FSLDIR + "/bin/fslval " + inputPaths[0] + " pixdim4"])
+                tr = subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " pixdim4")
                 if "Exception" in tr:
                     raise PyFSFError("Could not get TR from input image. fslval output: " + tr)
                 self.parent.settings["tr"] = float(tr.replace("\n","").strip())
@@ -190,7 +193,7 @@ class DataOptions:
                     raise PyFSFError("Total volumes must be int")
                 self.parent.settings["npts"] = totalVolumes
             else:
-                totalVolumes = subprocess.getoutput([FSLDIR + "/bin/fslnvols " + inputPaths[0]])
+                totalVolumes = subprocess.getoutput(FSLDIR + "/bin/fslnvols " + inputPaths[0])
                 if "Exception" in totalVolumes:
                     raise PyFSFError("Could not get number of volumes from input images. fslnvols output: " + totalVolumes)
                 self.parent.settings["npts"] = int(totalVolumes.replace("\n","").strip())
@@ -818,5 +821,19 @@ class RegOptions:
                     int(warpResolution)
                 except ValueError:
                     raise PyFSFError("Warp resolution must be int")
-            self.parent.settings["regstandard_nonlinear_warpres"]
+            self.parent.settings["regstandard_nonlinear_warpres"] = warpResolution
+
+class StatsOptions:
+    def __init__(self,parent):
+        self.parent = parent
+        if "prewhiten_yn" in self.parent.defaults:
+            if int(self.parent.defaults["prewhiten_yn"]) == 1:
+                self.DEFAULT_PREWHITEN = True
+            else:
+                self.DEFAULT_PREWHITEN = False
+        if "motionevs" in self.parent.defaults:
+            self.DEFAULT_MOTION_EVS = int(self.parent.defaults["motionevs"])
+
+    def AddEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
+        newEV = EV(name, filename, hrf, temporalDerivative, temporalFiltering)
 

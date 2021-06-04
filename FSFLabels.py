@@ -60,3 +60,8 @@ class RegistrationDOF:
     DOF_9 = 9
     DOF_12 = 12
     Options = [DOF_3,DOF_6,DOF_7,DOF_9,DOF_12]
+
+class FeatMotionEV:
+    NONE = 0
+    STANDARD = 1
+    STANDARD_PLUS_EXTENDED = 2

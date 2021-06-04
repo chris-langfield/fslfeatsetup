@@ -28,3 +28,7 @@ srReg = RegOptions(simpleRunFSF)
 srReg.ConfigureMainStructural(structural)
 
 simpleRunFSF.printSettings()
+
+srStats = StatsOptions(simpleRunFSF)
+
+srStats.AddEV("bla","bla.txt", Gamma(0,7,1))
