@@ -34,10 +34,20 @@ class Gaussian:
         self.sigma = sigma
         self.peaklag = peaklag
 
-class EV:
+class FirstLevelEV:
     def __init__(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True, shape=FeatEVShapes.Custom3Column):
         self.name = name
         self.filename = filename
         self.hrf = hrf
         self.temporalDerivative = temporalDerivative
         self.temporalFiltering = temporalFiltering
+
+class HigherLevelEV:
+    def __init__(self, name, vector):
+        self.name = name
+        self.vector = vector
+
+class Contrast:
+    def __init__(self, name, vector):
+        self.name = name
+        self.vector = vector

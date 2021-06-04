@@ -1,6 +1,7 @@
 import os
 import re
 import subprocess
+import numpy
 from FSFLabels import *
 from EVs import *
 import fsl
@@ -106,6 +107,9 @@ class FeatSettings:
         self.expandedFunctionalImages = []
 
         self.EVs = []
+        self.Contrasts = []
+        self.GroupMembership = []
+        self.Ortho = []
 
         if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
             raise PyFSFError("Level must be FeatLevel.HIGHER_LEVEL or FeatLevel.FIRST_LEVEL")
@@ -145,6 +149,19 @@ class FeatSettings:
     def printSettings(self):
         for option in self.settings:
             print(option,'--',self.settings[option])
+
+    def write(self, path):
+        with open(path) as outFile:
+            for s in self.settings:
+                outFile.write("set fmri(" + s + ") " + self.settings[s] + "\n\n")
+            for i in len(self.inputs):
+                outFile.write("set feat_files(" + str(i+1) + ") \"" + self.inputs[i] + "\"\n\n")
+            for i in len(self.mainStructuralImages):
+                outFile.write("set highres_files(" + str(i+1) + ") \"" + self.mainStructuralImages[i] + "\"\n\n")
+            if self.LEVEL == self.
+
+
+
 
 
 class DataOptions:
@@ -834,6 +851,26 @@ class StatsOptions:
         if "motionevs" in self.parent.defaults:
             self.DEFAULT_MOTION_EVS = int(self.parent.defaults["motionevs"])
 
-    def AddEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
-        newEV = EV(name, filename, hrf, temporalDerivative, temporalFiltering)
+    def AddFirstLevelEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
+        if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
+            raise PyFSFError("Cannot add a first level EV to a higher-level analysis!")
+        newEV = FirstLevelEV(name, filename, hrf, temporalDerivative, temporalFiltering)
+        self.parent.EVs.append(newEV)
 
+    def AddHigherLevelEV(self, name, vector):
+        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+            raise PyFSFError("Cannot add a higher level EV to a first level analysis!")
+        newEV = HigherLevelEV(name, vector)
+        self.parent.EVs.append(newEV)
+
+    def AddContrast(self, name, vector):
+        newContrast = Contrast(name, vector)
+        self.parent.Contrasts.append(newContrast)
+
+    def Groups(self, vector):
+        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+            raise PyFSFError("Cannot assign group membership to inputs in first-level analysis")
+        self.parent.GroupMembership = vector
+
+    def OrthogonalizeEVs(self, matrix):
+        self.parent.Ortho = matrix
