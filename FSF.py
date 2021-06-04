@@ -238,8 +238,7 @@ class DataOptions:
         :param deleteVolumes: Optional number of volumes to delete. Will be set to default found in defaults file, or otherwise set to 0
         :param tr: Optional TR of input images. Can be inferred if left blank.
         :param highPassCutoff: Optional, unless default file does not contain this setting
-        :param higherLevelInput: Optional, for higher-level analyses only. Can be set to 1 (lower-level feat directories) or 2 (lower level cope images),
-        or using the built-in type FeatHigherLevelInput.FEAT_DIRS or FeatHigherLevelInput.COPE_IMAGES
+        :param higherLevelInput: Optional, for higher-level analyses only. Can be set to 1 (lower-level feat directories) or 2 (lower level cope images), or using the built-in type FeatHigherLevelInput.FEAT_DIRS or FeatHigherLevelInput.COPE_IMAGES
         :return: None
         """
 

@@ -58,14 +58,13 @@ Takes parameters corresponding to the "Data" tab in the FEAT GUI. It then update
 
 **Arguments**:
 
-or using the built-in type FeatHigherLevelInput.FEAT_DIRS or FeatHigherLevelInput.COPE_IMAGES
 - `outputDirectory`: Mandatory .feat or .gfeat path
 - `inputPaths`: Mandatory list of input filepaths
 - `totalVolumes`: Optional number of volumes per input. Can be inferred if left blank.
 - `deleteVolumes`: Optional number of volumes to delete. Will be set to default found in defaults file, or otherwise set to 0
 - `tr`: Optional TR of input images. Can be inferred if left blank.
 - `highPassCutoff`: Optional, unless default file does not contain this setting
-- `higherLevelInput`: Optional, for higher-level analyses only. Can be set to 1 (lower-level feat directories) or 2 (lower level cope images),
+- `higherLevelInput`: Optional, for higher-level analyses only. Can be set to 1 (lower-level feat directories) or 2 (lower level cope images), or using the built-in type FeatHigherLevelInput.FEAT_DIRS or FeatHigherLevelInput.COPE_IMAGES
 
 **Returns**:
 
