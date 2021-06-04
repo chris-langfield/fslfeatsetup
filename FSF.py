@@ -212,8 +212,8 @@ class FeatSettings:
 
 class DataOptions:
     """
-    Must be a child object of a FeatSettings instance
-    This child must be created and configured before the others
+    Must be a child object of a FeatSettings instance.
+    This child must be created and configured before the others.
     """
     def __init__(self, myFeatSettings):
         self.parent = myFeatSettings
@@ -348,6 +348,9 @@ class DataOptions:
 
 
 class MiscOptions:
+    """
+    Must be a child object of a FeatSettings instance.
+    """
     def __init__(self, myFeatOptions):
         self.parent = myFeatOptions
         # default
@@ -378,6 +381,18 @@ class MiscOptions:
                   cleanupFirstLevel=None, # bool
                   overwriteOriginalPostStats = None, # bool
                   estimateNoiseFromData=False):
+        """
+        Takes parameters corresponding to the "Misc" tab in the FEAT GUI. It then updates the settings list of its FeatSettings parent class.
+
+        :param brainThreshold: Optional unless not specified in defaults file
+        :param noiseLevel: Optional unless not specified in defaults file
+        :param temporalSmoothness: Optional unless not specified in defaults file
+        :param zThreshold: Optional unless not specified in defaults file
+        :param cleanupFirstLevel: Optional unless not specified in defaults file
+        :param overwriteOriginalPostStats: Optional unless not specified in defaults file
+        :param estimateNoiseFromData: TODO
+        :return: None
+        """
 
         if brainThreshold == -1:
             if hasattr(self, 'DEFAULT_BRAIN_THRESH'):
@@ -550,6 +565,26 @@ class PreStatsOptions:
                   usingAlternateReferenceImage = None, # bool
                   alternateReferenceImages = None): ## list of paths
 
+        """
+        Takes parameters corresponding to the "Pre-stats" tab in the FEAT GUI. It then updates the settings list of its FeatSettings parent class.
+        :param mcflirt: Optional unless not specified in defaults file
+        :param b0_unwarp: Optional unless not specified in defaults file
+        :param melodic: Optional unless not specified in defaults file
+        :param sliceTiming: Optional, defaults to 0
+        :param sliceTimingFile: Mandatory depending on `sliceTiming`
+        :param bet: Optional unless not specified in defaults file
+        :param spatialSmoothing: Optional unless not specified in defaults file
+        :param intensityNormalization: Optional unless not specified in defaults file
+        :param perfusionSubtraction: Optional unless not specified in defaults file
+        :param perfusionTagControlOrder: Optional unless not specified in defaults file
+        :param highPassTemporalFilter: Optional unless not specified in defaults file
+        :param lowPassTemporalFilter: Optional unless not specified in defaults file
+        :param usingAlternateReferenceImage: Optional unless not specified in defaults file
+        :param alternateReferenceImages: Mandatory list of images, one per input, if `usingAlternateReferenceImage` is true
+        :return:
+        None
+        """
+
         if mcflirt is None:
             if hasattr(self, 'DEFAULT_MCFLIRT'):
                 mcflirt = self.DEFAULT_MCFLIRT
@@ -697,6 +732,16 @@ class PreStatsOptions:
                   unwarpDir = None, # string
                   signalLoss = None, # int
                   ):
+        """
+        Optionally sets up the B0 Unwarping fields. Must have already run `Configure()`
+        :param fieldmapImages: Mandatory list of images, one for each input
+        :param fieldmapMagnitudeImages: Mandatory list of images, one for each input
+        :param epiDwell: Optional unless not specified in defaults file
+        :param epiTE: Optional unless not specified in defaults file
+        :param unwarpDir: Optional unless not specified in defaults file
+        :param signalLoss: Optional unless not specified in defaults file
+        :return: None
+        """
         if not self.CONFIGURED:
             raise PyFSFError("The Pre-Stats options have not been configured. Use PreStatsOptions.Configure()")
         if fieldmapImages in [[], None]:
