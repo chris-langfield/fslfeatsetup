@@ -154,12 +154,12 @@ class FeatSettings:
             print(option,'--',self.settings[option])
 
     def write(self, path):
-        with open(path) as outFile:
+        with open(path,"w") as outFile:
             for s in self.settings:
                 outFile.write("set fmri(" + s + ") " + str(self.settings[s]) + "\n\n")
-            for i in len(self.inputs):
+            for i in range(len(self.inputs)):
                 outFile.write("set feat_files(" + str(i+1) + ") \"" + self.inputs[i] + "\"\n\n")
-            for i in len(self.mainStructuralImages):
+            for i in range(len(self.mainStructuralImages)):
                 outFile.write("set highres_files(" + str(i+1) + ") \"" + self.mainStructuralImages[i] + "\"\n\n")
             if self.LEVEL == FeatLevel.FIRST_LEVEL:
                 for e in range(len(self.EVs)):
@@ -184,14 +184,15 @@ class FeatSettings:
                     outFile.write(f"set fmri(groupmem.{g+1}) {self.GroupMembership[g]}\n\n")
 
                 for c in range(len(self.Contrasts)):
-                    outFile.write(f"set fmri(conpic_real.{c+1}) 1")
+                    outFile.write(f"set fmri(conpic_real.{c+1}) 1\n\n")
                     outFile.write(f"set fmri(conname_real.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
                     for x in range(len(self.Contrasts[c].vector)):
                         outFile.write(f"set fmri(con_real{c+1}.{x+1}) {self.Contrasts[c].vector[x]}\n\n")
 
             # length of orthogonalization vector is number of EVs plus 1 because you have to account for the null event 0
-            for o in range(-1, len(orthoVector)):
-                outFile.write(f"set fmri(ortho{e + 1}.{o + 1}) {orthoVector[o]}")
+            for o in range(len(self.Ortho)):
+                for p in range(len(self.Ortho[o])):
+                    outFile.write(f"set fmri(ortho{o + 1}.{p + 1}) {self.Ortho[o][p]}\n\n")
 
 
 
