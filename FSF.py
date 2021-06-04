@@ -170,6 +170,9 @@ class FeatSettings:
                     outFile.write("set fmri(tempfilt_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalFiltering)) + "\n\n")
                     outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
                     outFile.write("set fmri(custom" + str(e+1) + ") " + self.EVs[e].filename + "\n\n")
+                    orthoVector = self.Ortho[e]
+                    for o in range(len(orthoVector)):
+                        outFile.write(f"set fmri(ortho{e+1}.{o+1}) {orthoVector[o]}")
 
 
 
