@@ -6,6 +6,9 @@ from EVs import *
 import fsl
 
 class PyFSFError(Exception):
+    """
+    Generic error class for errors related to this module
+    """
     def __init__(self, *args):
         if args:
             self.message = args[0]
@@ -154,6 +157,11 @@ class FeatSettings:
             print(option,'--',self.settings[option])
 
     def write(self, path):
+        """
+        Collects all the configurations set by the child classes and writes out to an .fsf file.
+        :param path: filepath to the .fsf file
+        :return: None
+        """
         with open(path,"w") as outFile:
             for s in self.settings:
                 outFile.write("set fmri(" + s + ") " + str(self.settings[s]) + "\n\n")
