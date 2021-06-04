@@ -1,7 +1,6 @@
 import os
 import re
 import subprocess
-import numpy
 from FSFLabels import *
 from EVs import *
 import fsl
@@ -106,9 +105,13 @@ class FeatSettings:
         self.mainStructuralImages = []
         self.expandedFunctionalImages = []
 
+        # list of FirstLevelEV or HigherLevelEV objects (EVs.py)
         self.EVs = []
+        # list of Contrast objects (EVs.py)
         self.Contrasts = []
+        # list of 1s and 0s
         self.GroupMembership = []
+        # list of lists of 1s and 0s
         self.Ortho = []
 
         if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
@@ -153,12 +156,20 @@ class FeatSettings:
     def write(self, path):
         with open(path) as outFile:
             for s in self.settings:
-                outFile.write("set fmri(" + s + ") " + self.settings[s] + "\n\n")
+                outFile.write("set fmri(" + s + ") " + str(self.settings[s]) + "\n\n")
             for i in len(self.inputs):
                 outFile.write("set feat_files(" + str(i+1) + ") \"" + self.inputs[i] + "\"\n\n")
             for i in len(self.mainStructuralImages):
                 outFile.write("set highres_files(" + str(i+1) + ") \"" + self.mainStructuralImages[i] + "\"\n\n")
-            if self.LEVEL == self.
+            if self.LEVEL == FeatLevel.FIRST_LEVEL:
+                for e in range(len(self.EVs)):
+                    outFile.write("set fmri(evtitle" + str(e+1) + ") \"" + self.EVs[e].name + "\"\n\n")
+                    outFile.write("set fmri(shape" + str(e+1) + ") " + str(self.EVs[e].shape) + "\n\n")
+                    outFile.write("set fmri(convolve" + str(e+1) + ") " + str(self.EVs[e].hrf.idx) + "\n\n")
+                    outFile.write(self.EVs[e].hrf.write(e+1))
+                    outFile.write("set fmri(tempfilt_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalFiltering)) + "\n\n")
+                    outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
+                    outFile.write("set fmri(custom" + str(e+1) + ") " + self.EVs[e].filename + "\n\n")
 
 
 

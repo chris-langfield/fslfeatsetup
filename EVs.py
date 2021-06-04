@@ -22,17 +22,37 @@ class Gamma:
         self.phase = phase
         self.stdev = stdev
         self.lag = lag
+        self.idx = 2
+
+    def write(self, num):
+        return f"set fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gammasigma{num}) {self.stdev}\n\nset fmri(gammadelay{num})\n\n"
 
 
 class DoubleGamma:
     def __init__(self, phase=0):
         self.phase = phase
+        self.idx = 3
+    def write(self, num):
+        return f"set fmri(convolve_phase{num}) {self.phase}\n\n"
+
+class AltDoubleGamma:
+    def __init__(self, phase=0):
+        self.phase = phase
+        self.idx = 8
+    def write(self, num):
+        return f"set fmri(convolve_phase{num}) {self.phase}\n\n"
+
 
 class Gaussian:
     def __init__(self, phase=0, sigma=2.8, peaklag = 5):
         self.phase = phase
         self.sigma = sigma
         self.peaklag = peaklag
+        self.idx = 1
+
+    def write(self, num):
+        return f"set fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gausssigma{num}) {self.sigma}\n\nset fmri(gaussdelay{num}) {self.peaklag}\n\n"
+
 
 class FirstLevelEV:
     def __init__(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True, shape=FeatEVShapes.Custom3Column):
@@ -41,6 +61,7 @@ class FirstLevelEV:
         self.hrf = hrf
         self.temporalDerivative = temporalDerivative
         self.temporalFiltering = temporalFiltering
+        self.shape = shape
 
 class HigherLevelEV:
     def __init__(self, name, vector):
