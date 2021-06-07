@@ -6,7 +6,8 @@ FSF.pyc
 .DS_Store
 sampledata/ExBox*/*
 dist/*
-setup.cfg
-pyproject.toml
 pydoc-markdown.yml
 src/fsl_feat_setup.egg-info/*
+build/bdist*
+build/lib/*
+.readthedocs*

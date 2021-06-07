@@ -1,8 +1,8 @@
 import os
 import re
 import subprocess
-from FSFLabels import *
-from EVs import *
+from .FSFLabels import *
+from .EVs import *
 import fsl
 
 class PyFSFError(Exception):

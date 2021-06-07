@@ -1,0 +1,13 @@
+LICENSE.md
+README.md
+pyproject.toml
+setup.cfg
+src/fslfeatsetup/EVs.py
+src/fslfeatsetup/FSF.py
+src/fslfeatsetup/FSFLabels.py
+src/fslfeatsetup/__init__.py
+src/fslfeatsetup.egg-info/PKG-INFO
+src/fslfeatsetup.egg-info/SOURCES.txt
+src/fslfeatsetup.egg-info/dependency_links.txt
+src/fslfeatsetup.egg-info/requires.txt
+src/fslfeatsetup.egg-info/top_level.txt
