@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fslfeatsetup
-Version: 0.1.1
+Version: 0.1.2
 Summary: a small set of tools for create FSL FEAT .fsf configuration files
 Home-page: https://github.com/chris-langfield/pyfsf
 Author: Chris Langfield
@@ -8,6 +8,7 @@ Author-email: cal2254@cumc.columbia.edu
 License: Attribution-NonCommercial-ShareAlike
 Platform: UNKNOWN
 Requires-Python: >=3.7
+Description-Content-Type: text/markdown
 License-File: LICENSE.md
 
 # pyfsf
