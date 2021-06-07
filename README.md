@@ -1,4 +1,4 @@
-# pyfsf
+# fslfeatsetup
  
 Python functions to create an FSL FEAT configuration file (.fsf)
 
