@@ -996,7 +996,7 @@ class StatsOptions:
 
         ## hack to prevent an error TODO
         if "default_bfcustom" in self.parent.defaults:
-            self.parent.settings["fnirt_config"] = self.parent.defaults["fnirt_config"].replace("${FSLDIR}", FSLDIR)
+            self.parent.settings["default_bfcustom"] = self.parent.defaults["default_bfcustom"].replace("${FSLDIR}", FSLDIR)
 
         # Do stats
         self.parent.settings["stats_yn"] = 1
