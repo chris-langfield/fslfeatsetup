@@ -225,25 +225,25 @@ class FeatSettings:
                 for c in range(len(self.Contrasts)):
                     outFile.write("# Display images for contrast_real 1\n")
                     outFile.write(f"set fmri(conpic_real.{c+1}) 1\n\n")
-                    outFile.write(f"# Title for contrast_real {c}\n")
+                    outFile.write(f"# Title for contrast_real {c+1}\n")
                     outFile.write(f"set fmri(conname_real.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
                     for i in range(len(self.Contrasts[c].vector)):
-                        outFile.write(f"# Real contrast_real vector {c} element {i}\n")
-                        outFile.write(f"set fmri(con_real{c}.{i}) {self.Contrasts[c].vector[i]}\n\n")
+                        outFile.write(f"# Real contrast_real vector {c+1} element {i+1}\n")
+                        outFile.write(f"set fmri(con_real{c+1}.{i+1}) {self.Contrasts[c].vector[i]}\n\n")
 
                 for c in range(len(self.Contrasts)):
                     outFile.write("# Display images for contrast_orig 1\n")
                     outFile.write(f"set fmri(conpic_orig.{c+1}) 1\n\n")
-                    outFile.write(f"# Title for contrast_orig {c}\n")
+                    outFile.write(f"# Title for contrast_orig {c+1}\n")
                     outFile.write(f"set fmri(conname_orig.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
                     for i in range(len(self.Contrasts[c].vector)):
-                        outFile.write(f"# Real contrast_orig vector {c} element {i}\n")
-                        outFile.write(f"set fmri(con_orig{c}.{i}) {self.Contrasts[c].vector[i]}\n\n")
+                        outFile.write(f"# Real contrast_orig vector {c+1} element {i+1}\n")
+                        outFile.write(f"set fmri(con_orig{c+1}.{i+1}) {self.Contrasts[c].vector[i]}\n\n")
 
 
                 outFile.write("# Number of F-tests\n")
                 outFile.write(f"set fmri(nftests_orig) 0\n")
-                outFile.write(f"set fmri(nftests_real) 0\n")
+                outFile.write(f"set fmri(nftests_real) 0\n\n")
 
             if self.LEVEL == FeatLevel.HIGHER_LEVEL:
                 for e in range(len(self.EVs)):
@@ -263,6 +263,7 @@ class FeatSettings:
             # length of orthogonalization vector is number of EVs plus 1 because you have to account for the null event 0
             for o in range(len(self.Ortho)):
                 for p in range(len(self.Ortho[o])):
+                    outFile.write(f"# Orthogonalise EV {o} wrt EV {p}")
                     outFile.write(f"set fmri(ortho{o}.{p}) {self.Ortho[o][p]}\n\n")
 
 
