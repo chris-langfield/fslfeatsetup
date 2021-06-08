@@ -183,7 +183,7 @@ class FeatSettings:
                     outFile.write(self.EVs[e].hrf.write(e+1))
                     outFile.write("set fmri(tempfilt_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalFiltering)) + "\n\n")
                     outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
-                    outFile.write("set fmri(custom" + str(e+1) + ") " + self.EVs[e].filename + "\n\n")
+                    outFile.write("set fmri(custom" + str(e+1) + ") \"" + self.EVs[e].filename + "\"\n\n")
                     orthoVector = self.Ortho[e]
 
                 ## TODO: Lower-level Contrasts
@@ -1031,7 +1031,7 @@ class StatsOptions:
         self.parent.settings["randomisePermutations"] = randomisePermutations
 
 class PostStatsOptions:
-    def __init__(self):
+    def __init__(self, parent):
         self.parent = parent
         if "thresh" in self.parent.defaults:
             self.DEFAULT_THRESH = int(self.parent.defaults["thresh"])
