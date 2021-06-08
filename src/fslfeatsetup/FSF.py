@@ -204,12 +204,6 @@ class FeatSettings:
                     outFile.write(f"set fmri(ortho{o + 1}.{p + 1}) {self.Ortho[o][p]}\n\n")
 
 
-
-
-
-
-
-
 class DataOptions:
     """
     Must be a child object of a FeatSettings instance.
@@ -463,7 +457,7 @@ class MiscOptions:
             else:
                 if overwriteOriginalPostStats not in [True, False]:
                     raise PyFSFError("overwriteOriginalPostStats must be bool")
-            self.parent.settings["newdir_yn"] = overwriteOriginalPostStats
+            self.parent.settings["newdir_yn"] = int(overwriteOriginalPostStats)
 
 
 
@@ -593,7 +587,7 @@ class PreStatsOptions:
         else:
             if mcflirt not in [True, False]:
                 raise PyFSFError("MCFLIRT option must be bool")
-        self.parent.settings["mc"] = mcflirt
+        self.parent.settings["mc"] = int(mcflirt)
 
         if b0_unwarp is None:
             if hasattr(self, 'DEFAULT_B0_UNWARP'):
@@ -603,7 +597,7 @@ class PreStatsOptions:
         else:
             if b0_unwarp not in [True, False]:
                 raise PyFSFError("b0_unwarp option must be bool")
-        self.parent.settings["regunwarp_yn"] = b0_unwarp
+        self.parent.settings["regunwarp_yn"] = int(b0_unwarp)
 
         if melodic is None:
             if hasattr(self, 'DEFAULT_MELODIC'):
@@ -613,7 +607,7 @@ class PreStatsOptions:
         else:
             if melodic not in [True, False]:
                 raise PyFSFError("melodic option must be bool")
-        self.parent.settings["melodic_yn"] = melodic
+        self.parent.settings["melodic_yn"] = int(melodic)
 
         if sliceTiming is None:
             if hasattr(self, 'DEFAULT_SLICE_TIMING'):
@@ -633,7 +627,7 @@ class PreStatsOptions:
         else:
             if bet not in [True, False]:
                 raise PyFSFError("BET option must be bool")
-        self.parent.settings["bet_yn"] = bet
+        self.parent.settings["bet_yn"] = int(bet)
 
         if spatialSmoothing is None:
             if hasattr(self, 'DEFAULT_SMOOTH'):
@@ -661,7 +655,7 @@ class PreStatsOptions:
         else:
             if intensityNormalization not in [True, False]:
                 raise PyFSFError("intensity normalization option must be bool")
-        self.parent.settings["norm_yn"] = intensityNormalization
+        self.parent.settings["norm_yn"] = int(intensityNormalization)
 
         if perfusionSubtraction is None:
             if hasattr(self, 'DEFAULT_PERFSUB'):
@@ -671,7 +665,7 @@ class PreStatsOptions:
         else:
             if perfusionSubtraction not in [True, False]:
                 raise PyFSFError("Perfusion subtraction option must be bool")
-        self.parent.settings["perfsub_yn"] = perfusionSubtraction
+        self.parent.settings["perfsub_yn"] = int(perfusionSubtraction)
 
         if perfusionTagControlOrder is None:
             if hasattr(self, 'DEFAULT_PERF_TAGFIRST'):
@@ -691,7 +685,7 @@ class PreStatsOptions:
         else:
             if highPassTemporalFilter not in [True, False]:
                 raise PyFSFError("High pass temporal filter option must be bool")
-        self.parent.settings["temphp_yn"] = highPassTemporalFilter
+        self.parent.settings["temphp_yn"] = int(highPassTemporalFilter)
 
         if lowPassTemporalFilter is None:
             if hasattr(self, 'DEFAULT_TEMPORAL_LOWPASS'):
@@ -701,7 +695,7 @@ class PreStatsOptions:
         else:
             if lowPassTemporalFilter not in [True, False]:
                 raise PyFSFError("Low pass temporal filter option must be bool")
-        self.parent.settings["templp_yn"] = lowPassTemporalFilter
+        self.parent.settings["templp_yn"] = int(lowPassTemporalFilter)
 
         if usingAlternateReferenceImage is None:
             if hasattr(self, 'DEFAULT_ALT_REF_IMG'):
@@ -711,7 +705,7 @@ class PreStatsOptions:
         else:
             if usingAlternateReferenceImage not in [True, False]:
                 raise PyFSFError("Use Alternate Reference Image option must be bool")
-        self.parent.settings["alternativeReference_yn"] = usingAlternateReferenceImage
+        self.parent.settings["alternativeReference_yn"] = int(usingAlternateReferenceImage)
 
         if alternateReferenceImages is None:
             if usingAlternateReferenceImage:
@@ -931,7 +925,7 @@ class RegOptions:
         else:
             if doNonlinear not in [True,False]:
                 raise PyFSFError("doNonLinear must be bool")
-        self.parent.settings["regstandard_nonlinear_yn"] = doNonlinear
+        self.parent.settings["regstandard_nonlinear_yn"] = int(doNonlinear)
 
         if doNonlinear:
             if warpResolution is None:
@@ -956,6 +950,15 @@ class StatsOptions:
                 self.DEFAULT_PREWHITEN = False
         if "motionevs" in self.parent.defaults:
             self.DEFAULT_MOTION_EVS = int(self.parent.defaults["motionevs"])
+        if "mixed_yn" in self.parent.defaults:
+            self.DEFAULT_HIGHER_LEVEL_MODEL = int(self.parent.defaults["mixed_yn"])
+        if "randomisePermutations" in self.parent.defaults:
+            self.DEFAULT_RANDOMISE = int(self.parent.defaults["randomisePermutations"])
+        if "robust_yn" in self.parent.defaults:
+            if int(self.parent.defaults["robust_yn"]) == 1:
+                self.DEFAULT_OUTLIER_DEWEIGHTING = True
+            else:
+                self.DEFAULT_OUTLIER_DEWEIGHTING = False
 
     def AddFirstLevelEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
@@ -982,6 +985,53 @@ class StatsOptions:
         ## matrix is a list of lists with length and with numberOfEVs + 1 because you have to include the null (0) EV
         self.parent.Ortho = matrix
 
+    def ConfigureHigherLevel(self, model=None, outlierDeweighting = None, randomisePermutations=None):
+        if model not in HigherLevelModeling.Options:
+            raise PyFSFError("Higher level model must be in HigherLevelModeling.Options")
+        if model is None:
+            if hasattr(self, 'DEFAULT_HIGHER_LEVEL_MODEL'):
+                self.parent.settings["mixed_yn"] = self.DEFAULT_HIGHER_LEVEL_MODEL
+            else:
+                raise PyFSFError("No higher level model was assigned and none was found in defaults")
+        else:
+            self.parent.settings["mixed_yn"] = model
+        if outlierDeweighting is None:
+            if hasattr(self, 'DEFAULT_OUTLIER_DEWEIGHTING'):
+                self.parent.settings["robust_yn"] = outlierDeweighting
+            else:
+                raise PyFSFError("No outlier deweighting option was chosen and none was found in defaults")
+        else:
+            self.parent.settings["robust_yn"] = int(outlierDeweighting)
+        if randomisePermutations is None:
+            if hasattr(self, 'DEFAULT_RANDOMISE'):
+                self.parent.settings["randomisePermutations"] = randomisePermutations
+            else:
+                raise PyFSFError("Randomise permutations was not set and was not found in defaults")
+        else:
+            try:
+                int(randomisePermutations)
+            except ValueError:
+                raise PyFSFError("Randomise permutations must be int")
+            self.parent.settings["randomisePermutations"] = randomisePermutations
+
 class PostStatsOptions(self, parent):
     self.parent = parent
-
+    if "thresh" in self.parent.defaults:
+        self.DEFAULT_THRESH = int(self.parent.defaults["thresh"])
+    if "z_thresh" in self.parent.defaults:
+        self.DEFAULT_Z_THRESH = float(self.parent.defaults["z_thresh"])
+    if "prob_thresh" in self.parent.defaults:
+        self.DEFAULT_PROB_THRESH = float(self.parent.defaults["prob_thresh"])
+    if "rendertype" in self.parent.defaults:
+        self.DEFAULT_RENDERTYPE = int(self.parent.defaults["rendertype"])
+    if "zdisplay" in self.parent.defaults:
+        self.DEFAULT_Z_DISPLAY = int(self.parent.defaults["zdisplay"])
+    if "zmin" in self.parent.defaults:
+        self.DEFAULT_ZMIN_RENDER = float(self.parent.defaults["zmin"])
+    if "zmax" in self.parent.defaults:
+        self.DEFAULT_ZMAX_RENDER = float(self.parent.defaults["zmax"])
+    if "tsplot_yn" in self.parent.defaults:
+        if int(self.parent.defaults["tsplot_yn"]) == 1:
+            self.DEFAULT_TSPLOT = True
+        else:
+            self.DEFAULT_TSPLOT = False

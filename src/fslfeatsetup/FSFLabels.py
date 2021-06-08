@@ -65,3 +65,10 @@ class FeatMotionEV:
     NONE = 0
     STANDARD = 1
     STANDARD_PLUS_EXTENDED = 2
+
+class HigherLevelModeling:
+    MixedEffects_SimpleOLS = 0
+    MixedEffects_FLAME1 = 1
+    MixedEffects_FLAME1AND2 = 2
+    FixedEffects = 3
+    Options = [MixedEffects_FLAME1, MixedEffects_FLAME1AND2, MixedEffects_SimpleOLS, FixedEffects]
