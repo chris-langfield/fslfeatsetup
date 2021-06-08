@@ -1030,27 +1030,28 @@ class StatsOptions:
                 raise PyFSFError("Randomise permutations must be int")
         self.parent.settings["randomisePermutations"] = randomisePermutations
 
-class PostStatsOptions(self, parent):
-    self.parent = parent
-    if "thresh" in self.parent.defaults:
-        self.DEFAULT_THRESH = int(self.parent.defaults["thresh"])
-    if "z_thresh" in self.parent.defaults:
-        self.DEFAULT_Z_THRESH = float(self.parent.defaults["z_thresh"])
-    if "prob_thresh" in self.parent.defaults:
-        self.DEFAULT_PROB_THRESH = float(self.parent.defaults["prob_thresh"])
-    if "rendertype" in self.parent.defaults:
-        self.DEFAULT_RENDERTYPE = int(self.parent.defaults["rendertype"])
-    if "zdisplay" in self.parent.defaults:
-        self.DEFAULT_Z_DISPLAY = int(self.parent.defaults["zdisplay"])
-    if "zmin" in self.parent.defaults:
-        self.DEFAULT_ZMIN_RENDER = float(self.parent.defaults["zmin"])
-    if "zmax" in self.parent.defaults:
-        self.DEFAULT_ZMAX_RENDER = float(self.parent.defaults["zmax"])
-    if "tsplot_yn" in self.parent.defaults:
-        if int(self.parent.defaults["tsplot_yn"]) == 1:
-            self.DEFAULT_TSPLOT = True
-        else:
-            self.DEFAULT_TSPLOT = False
+class PostStatsOptions:
+    def __init__(self):
+        self.parent = parent
+        if "thresh" in self.parent.defaults:
+            self.DEFAULT_THRESH = int(self.parent.defaults["thresh"])
+        if "z_thresh" in self.parent.defaults:
+            self.DEFAULT_Z_THRESH = float(self.parent.defaults["z_thresh"])
+        if "prob_thresh" in self.parent.defaults:
+            self.DEFAULT_PROB_THRESH = float(self.parent.defaults["prob_thresh"])
+        if "rendertype" in self.parent.defaults:
+            self.DEFAULT_RENDERTYPE = int(self.parent.defaults["rendertype"])
+        if "zdisplay" in self.parent.defaults:
+            self.DEFAULT_Z_DISPLAY = int(self.parent.defaults["zdisplay"])
+        if "zmin" in self.parent.defaults:
+            self.DEFAULT_ZMIN_RENDER = float(self.parent.defaults["zmin"])
+        if "zmax" in self.parent.defaults:
+            self.DEFAULT_ZMAX_RENDER = float(self.parent.defaults["zmax"])
+        if "tsplot_yn" in self.parent.defaults:
+            if int(self.parent.defaults["tsplot_yn"]) == 1:
+                self.DEFAULT_TSPLOT = True
+            else:
+                self.DEFAULT_TSPLOT = False
     def Configure(self, thresh=None, zThresh=None, pThresh = None, renderType=None, zDisplay = None, zmin=None, zmax=None, makeTS = None):
         if thresh is None:
             if hasattr(self,'DEFAULT_THRESH'):

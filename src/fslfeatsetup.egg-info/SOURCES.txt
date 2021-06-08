@@ -2,6 +2,7 @@ LICENSE.md
 README.md
 pyproject.toml
 setup.cfg
+src/fslfeatsetup/Comments.py
 src/fslfeatsetup/EVs.py
 src/fslfeatsetup/FSF.py
 src/fslfeatsetup/FSFLabels.py
