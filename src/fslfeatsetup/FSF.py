@@ -3,6 +3,7 @@ import re
 import subprocess
 from .FSFLabels import *
 from .EVs import *
+from .Comments import *
 import fsl
 
 class PyFSFError(Exception):
@@ -165,6 +166,10 @@ class FeatSettings:
         """
         with open(path,"w") as outFile:
             for s in self.settings:
+                if s in Comments:
+                    outFile.write(Comments[s])
+                else:
+                    print(s, "not in Comments")
                 outFile.write("set fmri(" + s + ") " + str(self.settings[s]) + "\n\n")
             for i in range(len(self.inputs)):
                 outFile.write("set feat_files(" + str(i+1) + ") \"" + self.inputs[i] + "\"\n\n")
