@@ -304,7 +304,7 @@ class DataOptions:
             self.parent.settings["inputtype"] = higherLevelInput
             self.parent.settings["npts"] = len(inputPaths)
 
-        self.parent.settings["outputdir"] = outputDirectory
+        self.parent.settings["outputdir"] = "\"" + outputDirectory + "\""
         self.parent.settings["multiple"] = len(inputPaths)
 
         # input paths
@@ -650,7 +650,7 @@ class PreStatsOptions:
             if self.parent.settings["st"] not in [FeatSliceTiming.NONE, FeatSliceTiming.INTERLEAVED, FeatSliceTiming.REGULAR_DOWN, FeatSliceTiming.REGULAR_UP]:
                 raise PyFSFError("Slice timing or slice order file is required")
         else:
-            self.parent.settings["st_file"] = sliceTimingFile
+            self.parent.settings["st_file"] = "\"" + sliceTimingFile + "\""
 
         if intensityNormalization is None:
             if hasattr(self, 'DEFAULT_NORM'):
