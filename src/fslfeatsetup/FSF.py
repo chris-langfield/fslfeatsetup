@@ -1021,6 +1021,11 @@ class StatsOptions:
         self.parent.settings["stats_yn"] = 1
 
     def Configure(self, preWhitening=None):
+        """
+        Configure the Stats settings.
+        :param preWhitening: (bool) optional unless not specified in defaults
+        :return: None
+        """
         if preWhitening is None:
             if hasattr(self, 'DEFAULT_PREWHITEN'):
                 preWhitening = int(self.DEFAULT_PREWHITEN)
@@ -1057,6 +1062,13 @@ class StatsOptions:
         self.parent.Ortho = matrix
 
     def ConfigureHigherLevel(self, model=None, outlierDeweighting = None, randomisePermutations=None):
+        """
+        Configure higher level options
+        :param model: (int) must be FSFLabels.HigherLevelModeling.Options
+        :param outlierDeweighting: (bool) optional unless not specified in defaults
+        :param randomisePermutations: (int) optional unless not specified in defaults
+        :return:
+        """
         if model not in HigherLevelModeling.Options:
             raise PyFSFError("Higher level model must be in HigherLevelModeling.Options")
 
@@ -1108,6 +1120,18 @@ class PostStatsOptions:
             else:
                 self.DEFAULT_TSPLOT = False
     def Configure(self, thresh=None, zThresh=None, pThresh = None, renderType=None, zDisplay = None, zmin=None, zmax=None, makeTS = None):
+        """
+        Configure post stats. Most of these options have to do with the rendering done of the results.
+        :param thresh: (int) optional unless not specified in defaults. must be in FSFLabels.PostStatsThresholding.Options
+        :param zThresh: (float) optional unless not specified in defaults
+        :param pThresh: (float) optional unless not specified in defaults
+        :param renderType: (int) optional unless not specified in defaults. must be FSFLabels.PostStatsColorRendering.Options
+        :param zDisplay: (int) optional unless not specified in defaults. must be in FSFLabels.PostStatsZDisplay.Options
+        :param zmin: (float) optional unless not specified in defaults.
+        :param zmax: (float) optional unless not specified in defaults
+        :param makeTS: (bool) optional unless not specified in defaults
+        :return:
+        """
         if thresh is None:
             if hasattr(self,'DEFAULT_THRESH'):
                 thresh = self.DEFAULT_THRESH

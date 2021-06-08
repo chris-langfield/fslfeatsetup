@@ -1,10 +1,13 @@
-<a name="FSFLabels"></a>
-# FSFLabels
+<a name="fslfeatsetup"></a>
+# fslfeatsetup
 
-<a name="FSF"></a>
-# FSF
+<a name="fslfeatsetup.FSFLabels"></a>
+# fslfeatsetup.FSFLabels
 
-<a name="FSF.PyFSFError"></a>
+<a name="fslfeatsetup.FSF"></a>
+# fslfeatsetup.FSF
+
+<a name="fslfeatsetup.FSF.PyFSFError"></a>
 ## PyFSFError Objects
 
 ```python
@@ -13,14 +16,14 @@ class PyFSFError(Exception)
 
 Generic error class for errors related to this module
 
-<a name="FSF.FeatSettings"></a>
+<a name="fslfeatsetup.FSF.FeatSettings"></a>
 ## FeatSettings Objects
 
 ```python
 class FeatSettings()
 ```
 
-<a name="FSF.FeatSettings.write"></a>
+<a name="fslfeatsetup.FSF.FeatSettings.write"></a>
 #### write
 
 ```python
@@ -37,7 +40,7 @@ Collects all the configurations set by the child classes and writes out to an .f
 
 None
 
-<a name="FSF.DataOptions"></a>
+<a name="fslfeatsetup.FSF.DataOptions"></a>
 ## DataOptions Objects
 
 ```python
@@ -47,7 +50,7 @@ class DataOptions()
 Must be a child object of a FeatSettings instance.
 This child must be created and configured before the others.
 
-<a name="FSF.DataOptions.Configure"></a>
+<a name="fslfeatsetup.FSF.DataOptions.Configure"></a>
 #### Configure
 
 ```python
@@ -70,7 +73,7 @@ Takes parameters corresponding to the "Data" tab in the FEAT GUI. It then update
 
 None
 
-<a name="FSF.MiscOptions"></a>
+<a name="fslfeatsetup.FSF.MiscOptions"></a>
 ## MiscOptions Objects
 
 ```python
@@ -79,7 +82,7 @@ class MiscOptions()
 
 Must be a child object of a FeatSettings instance.
 
-<a name="FSF.MiscOptions.Configure"></a>
+<a name="fslfeatsetup.FSF.MiscOptions.Configure"></a>
 #### Configure
 
 ```python
@@ -102,14 +105,14 @@ Takes parameters corresponding to the "Misc" tab in the FEAT GUI. It then update
 
 None
 
-<a name="FSF.PreStatsOptions"></a>
+<a name="fslfeatsetup.FSF.PreStatsOptions"></a>
 ## PreStatsOptions Objects
 
 ```python
 class PreStatsOptions()
 ```
 
-<a name="FSF.PreStatsOptions.Configure"></a>
+<a name="fslfeatsetup.FSF.PreStatsOptions.Configure"></a>
 #### Configure
 
 ```python
@@ -139,7 +142,7 @@ Takes parameters corresponding to the "Pre-stats" tab in the FEAT GUI. It then u
 
 
 
-<a name="FSF.PreStatsOptions.Unwarping"></a>
+<a name="fslfeatsetup.FSF.PreStatsOptions.Unwarping"></a>
 #### Unwarping
 
 ```python
@@ -161,6 +164,165 @@ Optionally sets up the B0 Unwarping fields. Must have already run `Configure()`
 
 None
 
-<a name="EVs"></a>
-# EVs
+<a name="fslfeatsetup.FSF.StatsOptions"></a>
+## StatsOptions Objects
+
+```python
+class StatsOptions()
+```
+
+<a name="fslfeatsetup.FSF.StatsOptions.Configure"></a>
+#### Configure
+
+```python
+ | Configure(preWhitening=None)
+```
+
+Configure the Stats settings.
+
+**Arguments**:
+
+- `preWhitening`: (bool) optional unless not specified in defaults
+
+**Returns**:
+
+None
+
+<a name="fslfeatsetup.FSF.StatsOptions.ConfigureHigherLevel"></a>
+#### ConfigureHigherLevel
+
+```python
+ | ConfigureHigherLevel(model=None, outlierDeweighting=None, randomisePermutations=None)
+```
+
+Configure higher level options
+
+**Arguments**:
+
+- `model`: (int) must be FSFLabels.HigherLevelModeling.Options
+- `outlierDeweighting`: (bool) optional unless not specified in defaults
+- `randomisePermutations`: (int) optional unless not specified in defaults
+
+**Returns**:
+
+
+
+<a name="fslfeatsetup.FSF.PostStatsOptions"></a>
+## PostStatsOptions Objects
+
+```python
+class PostStatsOptions()
+```
+
+<a name="fslfeatsetup.FSF.PostStatsOptions.Configure"></a>
+#### Configure
+
+```python
+ | Configure(thresh=None, zThresh=None, pThresh=None, renderType=None, zDisplay=None, zmin=None, zmax=None, makeTS=None)
+```
+
+Configure post stats. Most of these options have to do with the rendering done of the results.
+
+**Arguments**:
+
+- `thresh`: (int) optional unless not specified in defaults. must be in FSFLabels.PostStatsThresholding.Options
+- `zThresh`: (float) optional unless not specified in defaults
+- `pThresh`: (float) optional unless not specified in defaults
+- `renderType`: (int) optional unless not specified in defaults. must be FSFLabels.PostStatsColorRendering.Options
+- `zDisplay`: (int) optional unless not specified in defaults. must be in FSFLabels.PostStatsZDisplay.Options
+- `zmin`: (float) optional unless not specified in defaults.
+- `zmax`: (float) optional unless not specified in defaults
+- `makeTS`: (bool) optional unless not specified in defaults
+
+**Returns**:
+
+
+
+<a name="fslfeatsetup.EVs"></a>
+# fslfeatsetup.EVs
+
+<a name="fslfeatsetup.EVs.FeatEVShapes"></a>
+## FeatEVShapes Objects
+
+```python
+class FeatEVShapes()
+```
+
+Enum specifying all the options for a first-level EV. Used for the shape kwarg in the constructor of the FirstLevelEV class
+Only Custom3Column currently enabled
+
+<a name="fslfeatsetup.EVs.FeatHRFConvolution"></a>
+## FeatHRFConvolution Objects
+
+```python
+class FeatHRFConvolution()
+```
+
+Enum specifying the types of HRF convolutions for a first level EV. Possibly unneeded.
+
+<a name="fslfeatsetup.EVs.Gamma"></a>
+## Gamma Objects
+
+```python
+class Gamma()
+```
+
+Object representing a Gamma convolution and its parameters. Used for the hrf kwarg in the FirstLevelEV class.
+
+<a name="fslfeatsetup.EVs.DoubleGamma"></a>
+## DoubleGamma Objects
+
+```python
+class DoubleGamma()
+```
+
+Object representing a Double Gamma convolution and its parameters. Used for the hrf kwarg in the FirstLevelEV class.
+
+<a name="fslfeatsetup.EVs.AltDoubleGamma"></a>
+## AltDoubleGamma Objects
+
+```python
+class AltDoubleGamma()
+```
+
+Object representing an Alternate Double Gamma convolution and its parameters. Used for the hrf kwarg in the FirstLevelEV class.
+
+<a name="fslfeatsetup.EVs.Gaussian"></a>
+## Gaussian Objects
+
+```python
+class Gaussian()
+```
+
+Object representing a Gaussian convolution and its parameters. Used for the hrf kwarg in the FirstLevelEV class.
+
+<a name="fslfeatsetup.EVs.FirstLevelEV"></a>
+## FirstLevelEV Objects
+
+```python
+class FirstLevelEV()
+```
+
+Object representing a first level EV. Will be refactored.
+
+<a name="fslfeatsetup.EVs.HigherLevelEV"></a>
+## HigherLevelEV Objects
+
+```python
+class HigherLevelEV()
+```
+
+Object representing a higher level EV
+
+<a name="fslfeatsetup.EVs.Contrast"></a>
+## Contrast Objects
+
+```python
+class Contrast()
+```
+
+Object representing a contrast
+
+<a name="fslfeatsetup.Comments"></a>
+# fslfeatsetup.Comments
 
