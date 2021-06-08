@@ -176,6 +176,10 @@ class FeatSettings:
             for i in range(len(self.mainStructuralImages)):
                 outFile.write("set highres_files(" + str(i+1) + ") \"" + self.mainStructuralImages[i] + "\"\n\n")
             if self.LEVEL == FeatLevel.FIRST_LEVEL:
+                outFile.write("# Number of EVs\n")
+                outFile.write(f"set fmri(evs_orig) {len(self.EVs)}\n")
+                outFile.write(f"set fmri(evs_real) {2 * len(self.EVs)}\n")
+                outFile.write(f"set fmri(evs_vox) 0\n")
                 for e in range(len(self.EVs)):
                     outFile.write("set fmri(evtitle" + str(e+1) + ") \"" + self.EVs[e].name + "\"\n\n")
                     outFile.write("set fmri(shape" + str(e+1) + ") " + str(self.EVs[e].shape) + "\n\n")
@@ -184,9 +188,15 @@ class FeatSettings:
                     outFile.write("set fmri(tempfilt_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalFiltering)) + "\n\n")
                     outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
                     outFile.write("set fmri(custom" + str(e+1) + ") \"" + self.EVs[e].filename + "\"\n\n")
-                    orthoVector = self.Ortho[e]
 
                 ## TODO: Lower-level Contrasts
+                outFile.write("# Number of Contrasts\n")
+                outFile.write(f"set fmri(ncon_orig) 0\n")
+                outFile.write(f"set fmri(ncon_real) 0\n")
+
+                outFile.write("# Number of F-tests\n")
+                outFile.write(f"set fmri(nftests_orig) 0\n")
+                outFile.write(f"set fmri(nftests_real) 0\n")
 
             if self.LEVEL == FeatLevel.HIGHER_LEVEL:
                 for e in range(len(self.EVs)):
@@ -1130,3 +1140,6 @@ class PostStatsOptions:
             if makeTS not in [True, False]:
                 raise PyFSFError("TS flag must be bool")
         self.parent.settings["tsplot_yn"] = int(makeTS)
+
+        # Set do post-stats flag to yes
+        self.parent.settings["poststats_yn"] = 1

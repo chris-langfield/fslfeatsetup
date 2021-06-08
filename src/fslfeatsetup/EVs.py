@@ -25,7 +25,7 @@ class Gamma:
         self.idx = 2
 
     def write(self, num):
-        return f"set fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gammasigma{num}) {self.stdev}\n\nset fmri(gammadelay{num}) {self.lag}\n\n"
+        return f"# Convolve phase (EV {num})\nset fmri(convolve_phase{num}) {self.phase}\n\n# Gamma standard deviation (EV {num})\nset fmri(gammasigma{num}) {self.stdev}\n\n# Gamma delay (EV {num})\nset fmri(gammadelay{num}) {self.lag}\n\n"
 
 
 class DoubleGamma:
@@ -33,14 +33,14 @@ class DoubleGamma:
         self.phase = phase
         self.idx = 3
     def write(self, num):
-        return f"set fmri(convolve_phase{num}) {self.phase}\n\n"
+        return f"# Convolve phase (EV {num})\nset fmri(convolve_phase{num}) {self.phase}\n\n"
 
 class AltDoubleGamma:
     def __init__(self, phase=0):
         self.phase = phase
         self.idx = 8
     def write(self, num):
-        return f"set fmri(convolve_phase{num}) {self.phase}\n\n"
+        return f"# Convolve phase (EV {num})\nset fmri(convolve_phase{num}) {self.phase}\n\n"
 
 
 class Gaussian:
@@ -51,7 +51,7 @@ class Gaussian:
         self.idx = 1
 
     def write(self, num):
-        return f"set fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gausssigma{num}) {self.sigma}\n\nset fmri(gaussdelay{num}) {self.peaklag}\n\n"
+        return f"# Convolve phase (EV {num})\nset fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gausssigma{num}) {self.sigma}\n\nset fmri(gaussdelay{num}) {self.peaklag}\n\n"
 
 
 class FirstLevelEV:
