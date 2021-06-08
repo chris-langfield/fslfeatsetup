@@ -866,6 +866,10 @@ class RegOptions:
                    mainStructuralRegSearch = None, # int
                    mainStructuralDOF = None # string
                   ):
+
+        # set reghighres_yn
+        self.parent.settings["reghighres_yn"] = 1
+
         if mainStructuralImages in [[],None]:
             raise PyFSFError("No structural images were provided!")
         elif not len(mainStructuralImages) == len(self.parent.inputs):
@@ -897,6 +901,9 @@ class RegOptions:
     def ConfigureExpandedFunctional(self, expandedFunctionalImages,
                                     expandedFunctionalSearch = None,
                                     expandedFunctionalDOF = None):
+
+        # set reginitial_highres_yn
+        self.parent.settings["reginitial_highres_yn"] = 1
 
         if expandedFunctionalImages in [[],None]:
             raise PyFSFError("No structural images were provided!")
@@ -932,6 +939,9 @@ class RegOptions:
                                doNonlinear = None, # bool
                                warpResolution = None # int
                                ):
+        # set regstandard_yn
+        self.parent.settings["regstandard_yn"] = 1
+
         if standardImage is None:
             if hasattr(self,'DEFAULT_STANDARD'):
                 standardImage = self.DEFAULT_STANDARD
