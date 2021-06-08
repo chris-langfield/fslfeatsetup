@@ -230,7 +230,7 @@ class FeatSettings:
             # length of orthogonalization vector is number of EVs plus 1 because you have to account for the null event 0
             for o in range(len(self.Ortho)):
                 for p in range(len(self.Ortho[o])):
-                    outFile.write(f"set fmri(ortho{o + 1}.{p + 1}) {self.Ortho[o][p]}\n\n")
+                    outFile.write(f"set fmri(ortho{o}.{p}) {self.Ortho[o][p]}\n\n")
 
 
 class DataOptions:
