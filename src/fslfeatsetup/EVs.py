@@ -25,7 +25,7 @@ class Gamma:
         self.idx = 2
 
     def write(self, num):
-        return f"set fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gammasigma{num}) {self.stdev}\n\nset fmri(gammadelay{num})\n\n"
+        return f"set fmri(convolve_phase{num}) {self.phase}\n\nset fmri(gammasigma{num}) {self.stdev}\n\nset fmri(gammadelay{num}) {self.lag}\n\n"
 
 
 class DoubleGamma:

@@ -824,6 +824,10 @@ class RegOptions:
         if "regstandard_nonlinear_warpres" in self.parent.defaults:
             self.DEFAULT_STANDARD_WARPRES = int(self.parent.defaults["regstandard_nonlinear_warpres"])
 
+        ## hack to prevent an error TODO
+        if "fnirt_config" in self.parent.defaults:
+            self.parent.settings["fnirt_config"] = "\"" + FSLDIR + "/data/standard/" + self.parent.defaults[
+                "fnirt_config"].replace("\"", "") + "\""
 
     def ConfigureMainStructural(self, mainStructuralImages, # list of filepaths
                    mainStructuralRegSearch = None, # int
@@ -900,7 +904,7 @@ class RegOptions:
                 standardImage = self.DEFAULT_STANDARD
             else:
                 raise PyFSFError("No standard image was specified and none was found in defaults")
-        self.parent.settings["regstandard"] = standardImage
+        self.parent.settings["regstandard"] = standardImage.replace("${FSLDIR}", FSLDIR)
 
         if standardSearch is None:
             if hasattr(self, 'DEFAULT_STANDARD_SEARCH'):
@@ -945,6 +949,7 @@ class RegOptions:
                     raise PyFSFError("Warp resolution must be int")
             self.parent.settings["regstandard_nonlinear_warpres"] = warpResolution
 
+
 class StatsOptions:
     def __init__(self,parent):
         self.parent = parent
@@ -964,6 +969,11 @@ class StatsOptions:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = True
             else:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = False
+
+        ## hack to prevent an error TODO
+        if "default_bfcustom" in self.parent.defaults:
+            self.parent.settings["fnirt_config"] = self.parent.defaults["fnirt_config"].replace("${FSLDIR}", FSLDIR)
+
 
     def Configure(self, preWhitening=None):
         if preWhitening is None:
