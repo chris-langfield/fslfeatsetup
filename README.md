@@ -17,8 +17,46 @@ Feel free to contribute
 todo
 
 ## First-level analysis steps
+```python
+    from fslfeatsetup.FSF import *
+    from fslfeatsetup.EVs import *
+    from fslfeatsetup.FSFLabels import *
 
-todo
+    SubjectFMRI = [ ... ] 
+    SubjectStructurals = [ ... ]
+
+    for i range(len(SubjectFMRI)):
+           FSF = FeatSettings(FeatLevel.FIRST_LEVEL, FeatAnalysis.FULL_ANALYSIS)
+           Data = DataOptions(r1_FSF)
+           Data.Configure("path/to/output/subject_i",
+                            [SubjectFMRI[i])
+
+           Misc = MiscOptions(FSF)
+           Misc.Configure()
+
+           Reg = RegOptions(FSF)
+           Reg.ConfigureStandardSpace()
+           Reg.ConfigureMainStructural([SubjectStructurals[i]])
+
+           PreStats = PreStatsOptions(FSF)
+           PreStats.Configure(sliceTiming=FeatSliceTiming.TIMING_FILE,
+                                 sliceTimingFile="path/to/slice/timing/file",
+                                 bet=True)
+           Stats = StatsOptions(FSF)
+           Stats.Configure()
+           Stats.AddFirstLevelEV("myEV1","path/to/my/EV1",Gamma())
+           Stats.AddFirstLevelEV("myEV2","path/to/my/EV2",Gamma())
+           Stats.AddFirstLevelEV("myEV3","path/to/my/EV3",Gamma())
+
+
+           Stats.OrthogonalizeEVs([ [ 0 for x in range(4)] for y in range(4)])
+
+           PostStats = PostStatsOptions(FSF)
+           PostStats.Configure(zmin = 2, zmax= 8)
+
+           FSF.write("path/to/subject_i/fsf")
+
+```
 
 ## Higher-level analysis steps
 
