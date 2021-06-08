@@ -965,6 +965,17 @@ class StatsOptions:
             else:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = False
 
+    def SetPrewhitening(self, preWhitening=None):
+        if preWhitening is None:
+            if hasattr(self, 'DEFAULT_PREWHITEN'):
+                preWhitening = int(self.DEFAULT_PREWHITEN)
+            else:
+                raise PyFSFError("No prewhitening was specified and none was found in defaults")
+        else:
+            if preWhitening not in [True, False]:
+                raise PyFSFError("Prewhiting must be bool")
+        self.parent.settings["prewhiten_yn"] = int(preWhitening)
+
     def AddFirstLevelEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
             raise PyFSFError("Cannot add a first level EV to a higher-level analysis!")
@@ -993,23 +1004,23 @@ class StatsOptions:
     def ConfigureHigherLevel(self, model=None, outlierDeweighting = None, randomisePermutations=None):
         if model not in HigherLevelModeling.Options:
             raise PyFSFError("Higher level model must be in HigherLevelModeling.Options")
+
         if model is None:
             if hasattr(self, 'DEFAULT_HIGHER_LEVEL_MODEL'):
-                self.parent.settings["mixed_yn"] = self.DEFAULT_HIGHER_LEVEL_MODEL
+                model = self.DEFAULT_HIGHER_LEVEL_MODEL
             else:
                 raise PyFSFError("No higher level model was assigned and none was found in defaults")
-        else:
-            self.parent.settings["mixed_yn"] = model
+        self.parent.settings["mixed_yn"] = model
+
         if outlierDeweighting is None:
             if hasattr(self, 'DEFAULT_OUTLIER_DEWEIGHTING'):
-                self.parent.settings["robust_yn"] = outlierDeweighting
+                outlierDeweighting = self.DEFAULT_OUTLIER_DEWEIGHTING
             else:
                 raise PyFSFError("No outlier deweighting option was chosen and none was found in defaults")
-        else:
-            self.parent.settings["robust_yn"] = int(outlierDeweighting)
+        self.parent.settings["robust_yn"] = int(outlierDeweighting)
         if randomisePermutations is None:
             if hasattr(self, 'DEFAULT_RANDOMISE'):
-                self.parent.settings["randomisePermutations"] = randomisePermutations
+                randomisePermutations = self.DEFAULT_RANDOMISE
             else:
                 raise PyFSFError("Randomise permutations was not set and was not found in defaults")
         else:
@@ -1017,7 +1028,7 @@ class StatsOptions:
                 int(randomisePermutations)
             except ValueError:
                 raise PyFSFError("Randomise permutations must be int")
-            self.parent.settings["randomisePermutations"] = randomisePermutations
+        self.parent.settings["randomisePermutations"] = randomisePermutations
 
 class PostStatsOptions(self, parent):
     self.parent = parent
