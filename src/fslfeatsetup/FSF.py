@@ -158,6 +158,15 @@ class FeatSettings:
         else:
             print("Only full analysis, preprocessing, and stats are allowed")
 
+    def setOption(self, option, value):
+        if option in self.settings:
+            print(f"old setting: {option} = {self.settings[option]}")
+            self.settings[option] = value
+            print(f"new setting: {option} = {self.settings[option]}")
+        else:
+            print(option, "not currently in settings. May cause an error if not recognized by FEAT")
+            self.settings[option] = value
+
     def printSettings(self):
         for option in self.settings:
             print(option,'--',self.settings[option])
@@ -182,17 +191,17 @@ class FeatSettings:
             if self.LEVEL == FeatLevel.FIRST_LEVEL:
                 outFile.write("# Number of EVs\n")
                 outFile.write(f"set fmri(evs_orig) {len(self.EVs)}\n")
-                outFile.write(f"set fmri(evs_real) {2 * len(self.EVs)}\n")
-                outFile.write(f"set fmri(evs_vox) 0\n")
+                outFile.write(f"set fmri(evs_real) {len(self.EVs)}\n")
+                outFile.write(f"set fmri(evs_vox) 0\n\n")
                 # temporary
                 outFile.write("# Add motion parameters to model\n# 0 : No\n# 1 : Yes\n")
                 outFile.write("set fmri(motionevs) 0\n")
-                outFile.write("set fmri(motionevsbeta)\"\"\n")
-                outFile.write("set fmri(scriptevsbeta) \"\"\n")
+                outFile.write("set fmri(motionevsbeta) \"\"\n")
+                outFile.write("set fmri(scriptevsbeta) \"\"\n\n")
 
                 # since this is first level
                 outFile.write("# Number of lower-level copes feeding into higher-level analysis\n")
-                outFile.write("set fmri(ncopeinputs) 0\n")
+                outFile.write("set fmri(ncopeinputs) 0\n\n")
 
                 for e in range(len(self.EVs)):
                     outFile.write("set fmri(evtitle" + str(e+1) + ") \"" + self.EVs[e].name + "\"\n\n")
