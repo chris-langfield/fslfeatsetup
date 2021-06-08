@@ -4,7 +4,7 @@ Python functions to create an FSL FEAT configuration file (.fsf)
 
 Can be run from python command line/REPL or incorporated into a script
 
-Work in progress -- not ready for use as yet
+**Work in progress -- not ready for use as yet**
 
 Feel free to contribute
 
@@ -12,6 +12,17 @@ Feel free to contribute
 
 [On Python Package Index (Test Server)](https://test.pypi.org/project/fslfeatsetup/)
 
+## Get started
+
+todo
+
+## First-level analysis steps
+
+todo
+
+## Higher-level analysis steps
+
+todo
 
 ## Changelog
 
