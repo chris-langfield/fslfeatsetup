@@ -965,7 +965,7 @@ class StatsOptions:
             else:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = False
 
-    def SetPrewhitening(self, preWhitening=None):
+    def Configure(self, preWhitening=None):
         if preWhitening is None:
             if hasattr(self, 'DEFAULT_PREWHITEN'):
                 preWhitening = int(self.DEFAULT_PREWHITEN)
@@ -1051,3 +1051,71 @@ class PostStatsOptions(self, parent):
             self.DEFAULT_TSPLOT = True
         else:
             self.DEFAULT_TSPLOT = False
+    def Configure(self, thresh=None, zThresh=None, pThresh = None, renderType=None, zDisplay = None, zmin=None, zmax=None, makeTS = None):
+        if thresh is None:
+            if hasattr(self,'DEFAULT_THRESH'):
+                thresh = self.DEFAULT_THRESH
+            else:
+                raise PyFSFError("No thresholding strategy was specified and none was found in defaults")
+        else:
+            if thresh not in PostStatsThresholding.Options:
+                raise PyFSFError("Invalid thresholding strategy")
+        self.parent.settings["thresh"] = thresh
+
+        if zThresh is None:
+            if hasattr(self, 'DEFAULT_Z_THRESH'):
+                zThresh = self.DEFAULT_Z_THRESH
+            else:
+                raise PyFSFError("No Z threshold rendering type was specified and none was found in defaults")
+        self.parent.settings["z_thresh"] = zThresh
+
+        if pThresh is None:
+            if hasattr(self, 'DEFAULT_PROB_THRESH'):
+                pThresh = self.DEFAULT_PROB_THRESH
+            else:
+                raise PyFSFError("No prob threshold specified and none was found in defaults")
+        self.parent.settings["prob_thresh"] = pThresh
+
+        if renderType is None:
+            if hasattr(self, 'DEFAULT_RENDERTYPE'):
+                renderType = self.DEFAULT_RENDERTYPE
+            else:
+                raise PyFSFError("No render type was specified and non was found in defaults")
+        else:
+            if renderType not in PostStatsColorRendering.Options:
+                raise PyFSFError("Invalid rendering type")
+        self.parent.settings["rendertype"] = renderType
+
+        if zDisplay is None:
+            if hasattr(self, 'DEFAULT_Z_DISPLAY'):
+                zDisplay = self.DEFAULT_Z_DISPLAY
+            else:
+                raise PyFSFError("No z display type was specified and non was found in defaults")
+        else:
+            if renderType not in PostStatsZDisplay.Options:
+                raise PyFSFError("Invalid z display type")
+        self.parent.settings["zdisplay"] = zDisplay
+
+        if zmin is None:
+            if hasattr(self, 'DEFAULT_Z_MIN'):
+                zmin = self.DEFAULT_Z_MIN
+            else:
+                raise PyFSFError("No Z min for display was specified and none was found in defaults")
+        self.parent.settings["zmin"] = zmin
+
+        if zmax is None:
+            if hasattr(self, 'DEFAULT_Z_MAX'):
+                zmax = self.DEFAULT_Z_MAX
+            else:
+                raise PyFSFError("No Z max for display was specified and none was found in defaults")
+        self.parent.settings["zmin"] = zmax
+
+        if makeTS is None:
+            if hasattr(self, 'DEFAULT_TSPLOT'):
+                makeTS = self.DEFAULT_TSPLOT
+            else:
+                raise PyFSFError("No plot TS flag was specified and none was found in defaults")
+        else:
+            if makeTS not in [True, False]:
+                raise PyFSFError("TS flag must be bool")
+        self.parent.settings["tsplot_yn"] = int(makeTS)

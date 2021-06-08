@@ -1,5 +1,4 @@
 
-
 class FeatLevel:
     FIRST_LEVEL = 1
     HIGHER_LEVEL = 2
@@ -72,3 +71,20 @@ class HigherLevelModeling:
     MixedEffects_FLAME1AND2 = 2
     FixedEffects = 3
     Options = [MixedEffects_FLAME1, MixedEffects_FLAME1AND2, MixedEffects_SimpleOLS, FixedEffects]
+
+class PostStatsThresholding:
+    NONE = 0
+    UNCORRECTED = 1
+    VOXEL = 2
+    CLUSTER = 3
+    Options = [NONE, UNCORRECTED, VOXEL, CLUSTER]
+
+class PostStatsColorRendering:
+    SOLID_BLOBS = 0
+    TRANSPARENT_BLOBS = 1
+    Options = [SOLID_BLOBS, TRANSPARENT_BLOBS]
+
+class PostStatsZDisplay:
+    ActualZMinMax = 0
+    PresetZminMax = 1
+    Options = [ActualZMinMax, PresetZminMax]
