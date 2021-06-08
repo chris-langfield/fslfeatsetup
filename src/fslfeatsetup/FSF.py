@@ -351,8 +351,8 @@ class MiscOptions:
     """
     Must be a child object of a FeatSettings instance.
     """
-    def __init__(self, myFeatOptions):
-        self.parent = myFeatOptions
+    def __init__(self, parent):
+        self.parent = parent
         # default
         if "brain_thresh" in self.parent.defaults:
             self.DEFAULT_BRAIN_THRESH = int(self.parent.defaults["brain_thresh"])
@@ -482,8 +482,8 @@ class MiscOptions:
 
 
 class PreStatsOptions:
-    def __init__(self, myFeatSettings):
-        self.parent = myFeatSettings
+    def __init__(self, parent):
+        self.parent = parent
         self.CONFIGURED = False
         # default
         if "dwell" in self.parent.defaults:
@@ -981,3 +981,7 @@ class StatsOptions:
     def OrthogonalizeEVs(self, matrix):
         ## matrix is a list of lists with length and with numberOfEVs + 1 because you have to include the null (0) EV
         self.parent.Ortho = matrix
+
+class PostStatsOptions(self, parent):
+    self.parent = parent
+
