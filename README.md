@@ -31,12 +31,14 @@ todo
            
            # Configure the Data options
            Data = DataOptions(FSF)
-           # The only required inputs are the output FEAT directory, and the list of FMRI files (or lower-level feats, see Higher Level Analysis example
+           # The only required inputs are the output FEAT directory, and the list of 
+           # FMRI files (or lower-level feats, see Higher Level Analysis example
            Data.Configure("path/to/output/subject_i",[SubjectFMRI[i]])
 
            # Configure the Miscellaneous options
            Misc = MiscOptions(FSF)
-           # There are NO required inputs. Using the defaults specified in my FSL installation. If fslfeatsetup needs an option that is not in the defaults, it will let you know 
+           # There are NO required inputs. Using the defaults specified in my FSL installation. 
+           # If fslfeatsetup needs an option that is not in the defaults, it will let you know 
            Misc.Configure()
 
            # Configure Registration options
