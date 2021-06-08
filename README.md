@@ -16,7 +16,7 @@ Feel free to contribute
 
 todo
 
-## First-level analysis steps
+## First-level analysis example
 ```python
     from fslfeatsetup.FSF import *
     from fslfeatsetup.EVs import *
@@ -26,34 +26,59 @@ todo
     SubjectStructurals = [ ... ]
 
     for i range(len(SubjectFMRI)):
+           # initialize the FeatSettings object
            FSF = FeatSettings(FeatLevel.FIRST_LEVEL, FeatAnalysis.FULL_ANALYSIS)
-           Data = DataOptions(r1_FSF)
-           Data.Configure("path/to/output/subject_i",
-                            [SubjectFMRI[i])
+           
+           # Configure the Data options
+           Data = DataOptions(FSF)
+           # The only required inputs are the output FEAT directory, and the list of FMRI files (or lower-level feats, see Higher Level Analysis example
+           Data.Configure("path/to/output/subject_i",[SubjectFMRI[i]])
 
+           # Configure the Miscellaneous options
            Misc = MiscOptions(FSF)
+           # There are NO required inputs. Using the defaults specified in my FSL installation. If fslfeatsetup needs an option that is not in the defaults, it will let you know 
            Misc.Configure()
 
+           # Configure Registration options
            Reg = RegOptions(FSF)
+           
+           # I can specify a standard to use, or I can go with the default 2mm MNI152, as I am here
            Reg.ConfigureStandardSpace()
+           # The only required argument 
            Reg.ConfigureMainStructural([SubjectStructurals[i]])
-
+           
+           # If I don't want to use expanded functional data, I simply don't configure it
+           # Reg.ConfigureExpandedFunctional([ this would be a list of your expanded functional images ])
+           
+           
+           # Configure Pre-Stats options
            PreStats = PreStatsOptions(FSF)
+           # The library has built-in enum-like structures that hardcode the FEAT options
            PreStats.Configure(sliceTiming=FeatSliceTiming.TIMING_FILE,
                                  sliceTimingFile="path/to/slice/timing/file",
                                  bet=True)
+                                 
+           # Configure Stats options
            Stats = StatsOptions(FSF)
+           # using all defaults, so I don't need to specify keyword arguments
            Stats.Configure()
-           Stats.AddFirstLevelEV("myEV1","path/to/my/EV1",Gamma())
+           # Add EVs from custom 3 column text formats. 
+           # specify the parameters of the convolution function, or use defaults:
+           Stats.AddFirstLevelEV("myEV1","path/to/my/EV1",Gamma(phase=0, stdev=3, lag=6))
            Stats.AddFirstLevelEV("myEV2","path/to/my/EV2",Gamma())
            Stats.AddFirstLevelEV("myEV3","path/to/my/EV3",Gamma())
 
-
+           # orthogonalize
+           # The argument is a pythonic matrix (list of lists)
+           # the size of this matrix will be one larger than the number of EVs
            Stats.OrthogonalizeEVs([ [ 0 for x in range(4)] for y in range(4)])
 
+           # Configure Post-Stats options
            PostStats = PostStatsOptions(FSF)
+           # using all defaults except for min and max Z-threshold for rendering
            PostStats.Configure(zmin = 2, zmax= 8)
 
+           # write to .fsf file
            FSF.write("path/to/subject_i/fsf")
 
 ```
