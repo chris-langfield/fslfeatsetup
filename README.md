@@ -25,7 +25,7 @@ todo
     SubjectFMRI = [ ... ] 
     SubjectStructurals = [ ... ]
 
-    for i range(len(SubjectFMRI)):
+    for i in range(len(SubjectFMRI)):
            # initialize the FeatSettings object
            FSF = FeatSettings(FeatLevel.FIRST_LEVEL, FeatAnalysis.FULL_ANALYSIS)
            
