@@ -212,10 +212,34 @@ class FeatSettings:
                     outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
                     outFile.write("set fmri(custom" + str(e+1) + ") \"" + self.EVs[e].filename + "\"\n\n")
 
-                ## TODO: Lower-level Contrasts
+                outFile.write("# Contrast & F-tests mode\n")
+                outFile.write("# real : control real EVs\n")
+                outFile.write("# orig : control original EVs\n")
+                outFile.write("set fmri(con_mode_old) orig\n")
+                outFile.write("set fmri(con_mode) orig\n")
+
                 outFile.write("# Number of Contrasts\n")
-                outFile.write(f"set fmri(ncon_orig) 0\n")
-                outFile.write(f"set fmri(ncon_real) 0\n")
+                outFile.write(f"set fmri(ncon_orig) {len(self.Contrasts)}\n")
+                outFile.write(f"set fmri(ncon_real) {len(self.Contrasts)}\n\n")
+
+                for c in range(len(self.Contrasts)):
+                    outFile.write("# Display images for contrast_real 1\n")
+                    outFile.write(f"set fmri(conpic_real.{c+1}) 1\n\n")
+                    outFile.write(f"# Title for contrast_real {c}\n")
+                    outFile.write(f"set fmri(conname_real.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
+                    for i in range(len(self.Contrasts[c].vector)):
+                        outFile.write(f"# Real contrast_real vector {c} element {i}\n")
+                        outFile.write(f"set fmri(con_real{c}.{i}) {self.Contrasts[c].vector[i]}\n\n")
+
+                for c in range(len(self.Contrasts)):
+                    outFile.write("# Display images for contrast_orig 1\n")
+                    outFile.write(f"set fmri(conpic_orig.{c+1}) 1\n\n")
+                    outFile.write(f"# Title for contrast_orig {c}\n")
+                    outFile.write(f"set fmri(conname_orig.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
+                    for i in range(len(self.Contrasts[c].vector)):
+                        outFile.write(f"# Real contrast_orig vector {c} element {i}\n")
+                        outFile.write(f"set fmri(con_orig{c}.{i}) {self.Contrasts[c].vector[i]}\n\n")
+
 
                 outFile.write("# Number of F-tests\n")
                 outFile.write(f"set fmri(nftests_orig) 0\n")
