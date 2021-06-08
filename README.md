@@ -17,4 +17,6 @@ Feel free to contribute
 
 |  PyPI version |  Description |
 | ------ | ------ |
+| 0.2.1  | Patched a silly bug |
+| 0.2.0  | first "complete" version, with post-stats options and auto generated comments. still very much a work in progress |
 | 0.1.2  | first stable version - package still a work in progress |
