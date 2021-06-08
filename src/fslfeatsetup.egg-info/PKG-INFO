@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: fslfeatsetup
-Version: 0.2.8
+Version: 0.2.9
 Summary: a small set of tools for create FSL FEAT .fsf configuration files
 Home-page: https://github.com/chris-langfield/pyfsf
 Author: Chris Langfield
@@ -41,6 +41,7 @@ todo
 
 |  PyPI version |  Description |
 | ------ | ------ |
+| 0.2.8  | Generated an .fsf accepted by FEAT. There are a bunch of hard-coded defaults that still need to be fixed |
 | 0.2.5  | Fixed gammadelay being blank and FSLDIR not found |
 | 0.2.3  | Patch: quotations for custom EV files |
 | 0.2.1  | Patched a silly bug |
