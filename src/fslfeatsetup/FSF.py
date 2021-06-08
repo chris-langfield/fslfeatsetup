@@ -131,6 +131,10 @@ class FeatSettings:
         # FEAT version
         self.settings["version"] = FEAT_VERSION
 
+        # Some defaults not appearing in GUI
+
+        self.settings["relative_yn"] = 0
+
         # get default settings
         if os.path.exists(defaultsFilename):
             with open(defaultsFilename) as defaults:
@@ -180,6 +184,16 @@ class FeatSettings:
                 outFile.write(f"set fmri(evs_orig) {len(self.EVs)}\n")
                 outFile.write(f"set fmri(evs_real) {2 * len(self.EVs)}\n")
                 outFile.write(f"set fmri(evs_vox) 0\n")
+                # temporary
+                outFile.write("# Add motion parameters to model\n# 0 : No\n# 1 : Yes\n")
+                outFile.write("set fmri(motionevs) 0\n")
+                outFile.write("set fmri(motionevsbeta)\"\"\n")
+                outFile.write("set fmri(scriptevsbeta) \"\"\n")
+
+                # since this is first level
+                outFile.write("# Number of lower-level copes feeding into higher-level analysis\n")
+                outFile.write("set fmri(ncopeinputs) 0\n")
+
                 for e in range(len(self.EVs)):
                     outFile.write("set fmri(evtitle" + str(e+1) + ") \"" + self.EVs[e].name + "\"\n\n")
                     outFile.write("set fmri(shape" + str(e+1) + ") " + str(self.EVs[e].shape) + "\n\n")
@@ -984,6 +998,8 @@ class StatsOptions:
         if "default_bfcustom" in self.parent.defaults:
             self.parent.settings["fnirt_config"] = self.parent.defaults["fnirt_config"].replace("${FSLDIR}", FSLDIR)
 
+        # Do stats
+        self.parent.settings["stats_yn"] = 1
 
     def Configure(self, preWhitening=None):
         if preWhitening is None:
@@ -1143,3 +1159,4 @@ class PostStatsOptions:
 
         # Set do post-stats flag to yes
         self.parent.settings["poststats_yn"] = 1
+        self.parent.settings["thresh_mask"] = "\"\""
