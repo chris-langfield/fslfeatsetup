@@ -28,6 +28,7 @@ todo
 
 |  PyPI version |  Description |
 | ------ | ------ |
+| 0.2.5  | Fixed gammadelay being blank and FSLDIR not found |
 | 0.2.3  | Patch: quotations for custom EV files |
 | 0.2.1  | Patched a silly bug |
 | 0.2.0  | first "complete" version, with post-stats options and auto generated comments. still very much a work in progress |
