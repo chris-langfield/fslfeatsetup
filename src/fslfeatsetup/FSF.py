@@ -1257,4 +1257,3 @@ class PostStatsOptions:
 
         # Set do post-stats flag to yes
         self.parent.settings["poststats_yn"] = 1
-        self.parent.settings["thresh_mask"] = "\"\""
