@@ -1,3 +1,5 @@
+![pypi_badge](https://img.shields.io/pypi/v/fslfeatsetup?style=plastic)
+
 # fslfeatsetup
  
 Python functions to create an FSL FEAT configuration file (.fsf)
