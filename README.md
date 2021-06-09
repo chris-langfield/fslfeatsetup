@@ -34,18 +34,12 @@ todo
            # The only required inputs are the output FEAT directory, and the list of 
            # FMRI files (or lower-level feats, see Higher Level Analysis example
            Data.Configure("path/to/output/subject_i",[SubjectFMRI[i]])
-           
-           ## Full options:
-           ## Data.Configure(outputDirectory, inputPaths, totalVolumes, deleteVolumes, tr, highPassCutoff, higherLevelInput)
 
            # Configure the Miscellaneous options
            Misc = MiscOptions(FSF)
            # There are NO required inputs. Using the defaults specified in my FSL installation. 
            # If fslfeatsetup needs an option that is not in the defaults, it will let you know 
            Misc.Configure()
-           
-           ## Full options:
-           ## Misc.Configure(brainThreshold, noiseLevel, temporalSmoothness, zThreshold, cleanupFirstLevel, overwriteOriginalPostStats)
 
            # Configure Registration options
            Reg = RegOptions(FSF)
@@ -58,11 +52,6 @@ todo
            # If I don't want to use expanded functional data, I simply don't configure it
            # Reg.ConfigureExpandedFunctional([ this would be a list of your expanded functional images ])
            
-           ## Full options:
-           ## Reg.ConfigureStandardSpace(standardImage, standardSearch, standardDOF, doNonLinear, warpResolution)
-           ## Reg.ConfigureMainStructural(mainStructuralImages, mainStructuralSearch, mainStructuralDOF) 
-           ## Reg.ConfigureExpandedFunctional(expandedFunctionalImages, expandedFunctionalSearch, expandedFunctionalDOF)
-           
            
            # Configure Pre-Stats options
            PreStats = PreStatsOptions(FSF)
@@ -70,14 +59,6 @@ todo
            PreStats.Configure(sliceTiming=FeatSliceTiming.TIMING_FILE,
                                  sliceTimingFile="path/to/slice/timing/file",
                                  bet=True)
-                                 
-           ## Full options:
-           ## PreStats.Configure(mcflirt, b0_unwarp, melodic, sliceTiming, sliceTimingFile, bet, spatialSmoothing, intensityNormalization,
-                                  perfusionSubtraction, perfusionTagControlOrder, highPassTemporalFilter, lowPassTemporalFilter,
-                                  usingAlternateReferenceImage, alternateReferenceImages)
-                                  
-           ## Pre-Stats Unwarping full options
-           ## PreStats.Unwarping(fieldmapImages, fieldmapMagnitudeImages, [epiDwell, epiTE, unwarpDir, signalLoss])
                                  
            # Configure Stats options
            Stats = StatsOptions(FSF)
@@ -88,9 +69,6 @@ todo
            Stats.AddFirstLevelEV("myEV1","path/to/my/EV1",Gamma(phase=0, stdev=3, lag=6))
            Stats.AddFirstLevelEV("myEV2","path/to/my/EV2",Gamma())
            Stats.AddFirstLevelEV("myEV3","path/to/my/EV3",Gamma())
-           
-           ## Full options 
-           ## Stats.Configure(preWhitening, addMotionEVs)
 
            # orthogonalize
            # The argument is a pythonic matrix (list of lists)
