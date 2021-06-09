@@ -205,9 +205,9 @@ class FeatSettings:
                 for e in range(len(self.EVs)):
                     outFile.write(f"# EV {e+1} title\n")
                     outFile.write("set fmri(evtitle" + str(e+1) + ") \"" + self.EVs[e].name + "\"\n\n")
-                    outFile.write(f"# Basic waveform shape (EV {e+1})\n# 0 : Square\n# 1 : Sinusoid\n# 2 : Custom (1 entry per volume)\n# 3 : Custom (3 column format)\n# 4 : Interaction\n# 10 : Empty (all zeros)")
+                    outFile.write(f"# Basic waveform shape (EV {e+1})\n# 0 : Square\n# 1 : Sinusoid\n# 2 : Custom (1 entry per volume)\n# 3 : Custom (3 column format)\n# 4 : Interaction\n# 10 : Empty (all zeros)\n")
                     outFile.write("set fmri(shape" + str(e+1) + ") " + str(self.EVs[e].shape) + "\n\n")
-                    outFile.write(f"# Convolution (EV {e+1})\n# 0 : None\n# 1 : Gaussian\n# 2 : Gamma\n# 3 : Double-Gamma HRF\n# 4 : Gamma basis functions\n# 5 : Sine basis functions\n# 6 : FIR basis functions")
+                    outFile.write(f"# Convolution (EV {e+1})\n# 0 : None\n# 1 : Gaussian\n# 2 : Gamma\n# 3 : Double-Gamma HRF\n# 4 : Gamma basis functions\n# 5 : Sine basis functions\n# 6 : FIR basis functions\n")
                     outFile.write("set fmri(convolve" + str(e+1) + ") " + str(self.EVs[e].hrf.idx) + "\n\n")
                     outFile.write(self.EVs[e].hrf.write(e+1))
                     outFile.write(f"# Apply temporal filtering (EV {e+1})\n")
