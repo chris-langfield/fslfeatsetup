@@ -893,7 +893,7 @@ class RegOptions:
                 "fnirt_config"].replace("\"", "") + "\""
 
     def ConfigureMainStructural(self, mainStructuralImages, # list of filepaths
-                   mainStructuralRegSearch = None, # int
+                   mainStructuralSearch = None, # int
                    mainStructuralDOF = None # string
                   ):
 
@@ -908,15 +908,15 @@ class RegOptions:
         for i in range(len(self.parent.inputs)):
             self.parent.mainStructuralImages.append(mainStructuralImages[i])
 
-        if mainStructuralRegSearch is None:
+        if mainStructuralSearch is None:
             if hasattr(self, 'DEFAULT_MAIN_STRUCTURAL_SEARCH'):
-                mainStructuralRegSearch = self.DEFAULT_MAIN_STRUCTURAL_SEARCH
+                mainStructuralSearch = self.DEFAULT_MAIN_STRUCTURAL_SEARCH
             else:
                 raise PyFSFError("No search strategy was selected for main structural image registration, and none was found in defaults")
         else:
-            if mainStructuralRegSearch not in RegistrationSearch.Options:
-                raise PyFSFError("mainStructuralRegSearch must be in RegistrationSearch.Options")
-        self.parent.settings["reghighres_search"] = mainStructuralRegSearch
+            if mainStructuralSearch not in RegistrationSearch.Options:
+                raise PyFSFError("mainStructuralSearch must be in RegistrationSearch.Options")
+        self.parent.settings["reghighres_search"] = mainStructuralSearch
 
         if mainStructuralDOF is None:
             if hasattr(self, 'DEFAULT_MAIN_STRUCTURAL_DOF'):
