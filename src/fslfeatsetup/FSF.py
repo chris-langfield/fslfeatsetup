@@ -1165,7 +1165,7 @@ class PostStatsOptions:
                 self.DEFAULT_TSPLOT = True
             else:
                 self.DEFAULT_TSPLOT = False
-    def Configure(self, thresh=None, zThresh=None, pThresh = None, renderType=None, zDisplay = None, zmin=None, zmax=None, makeTS = None):
+    def Configure(self, thresh=None, zThresh=None, pThresh = None, renderType=None, zDisplay = None, zmin=None, zmax=None, makeTS = None, prethresholdMask = ""):
         """
         Configure post stats. Most of these options have to do with the rendering done of the results.
         :param thresh: (int) optional unless not specified in defaults. must be in FSFLabels.PostStatsThresholding.Options
@@ -1234,7 +1234,7 @@ class PostStatsOptions:
                 zmax = self.DEFAULT_Z_MAX
             else:
                 raise PyFSFError("No Z max for display was specified and none was found in defaults")
-        self.parent.settings["zmin"] = zmax
+        self.parent.settings["zmax"] = zmax
 
         if makeTS is None:
             if hasattr(self, 'DEFAULT_TSPLOT'):
@@ -1245,6 +1245,15 @@ class PostStatsOptions:
             if makeTS not in [True, False]:
                 raise PyFSFError("TS flag must be bool")
         self.parent.settings["tsplot_yn"] = int(makeTS)
+
+        if prethresholdMask in ["", None]:
+            self.parent.settings["threshmask"] = "\"\""
+        else:
+            try:
+                str(prethresholdMask)
+            except ValueError:
+                raise PyFSFError("prethresholdMask must be str")
+        self.parent.settings["threshmask"] = f"\"{prethresholdMask}\""
 
         # Set do post-stats flag to yes
         self.parent.settings["poststats_yn"] = 1
