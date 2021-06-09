@@ -193,23 +193,28 @@ class FeatSettings:
                 outFile.write(f"set fmri(evs_orig) {len(self.EVs)}\n")
                 outFile.write(f"set fmri(evs_real) {len(self.EVs)}\n")
                 outFile.write(f"set fmri(evs_vox) 0\n\n")
-                # temporary
-                outFile.write("# Add motion parameters to model\n# 0 : No\n# 1 : Yes\n")
-                outFile.write("set fmri(motionevs) 0\n")
-                outFile.write("set fmri(motionevsbeta) \"\"\n")
-                outFile.write("set fmri(scriptevsbeta) \"\"\n\n")
+
+                # not implemented yet
+                outFile.write(f"set fmri(motionevsbeta) \"\"\n")
+                outFile.write(f"set fmri(scriptevsbeta) \"\"\n\n")
 
                 # since this is first level
                 outFile.write("# Number of lower-level copes feeding into higher-level analysis\n")
                 outFile.write("set fmri(ncopeinputs) 0\n\n")
 
                 for e in range(len(self.EVs)):
+                    outFile.write(f"# EV {e+1} title\n")
                     outFile.write("set fmri(evtitle" + str(e+1) + ") \"" + self.EVs[e].name + "\"\n\n")
+                    outFile.write(f"# Basic waveform shape (EV {e+1})\n# 0 : Square\n# 1 : Sinusoid\n# 2 : Custom (1 entry per volume)\n# 3 : Custom (3 column format)\n# 4 : Interaction\n# 10 : Empty (all zeros)")
                     outFile.write("set fmri(shape" + str(e+1) + ") " + str(self.EVs[e].shape) + "\n\n")
+                    outFile.write(f"# Convolution (EV {e+1})\n# 0 : None\n# 1 : Gaussian\n# 2 : Gamma\n# 3 : Double-Gamma HRF\n# 4 : Gamma basis functions\n# 5 : Sine basis functions\n# 6 : FIR basis functions")
                     outFile.write("set fmri(convolve" + str(e+1) + ") " + str(self.EVs[e].hrf.idx) + "\n\n")
                     outFile.write(self.EVs[e].hrf.write(e+1))
+                    outFile.write(f"# Apply temporal filtering (EV {e+1})\n")
                     outFile.write("set fmri(tempfilt_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalFiltering)) + "\n\n")
+                    outFile.write(f"# Add temporal derivative (EV {e+1})\n")
                     outFile.write("set fmri(deriv_yn" + str(e+1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
+                    outFile.write(f"# Custom EV file (EV {e+1})\n")
                     outFile.write("set fmri(custom" + str(e+1) + ") \"" + self.EVs[e].filename + "\"\n\n")
 
                 outFile.write("# Contrast & F-tests mode\n")
@@ -1050,10 +1055,11 @@ class StatsOptions:
         # Do stats
         self.parent.settings["stats_yn"] = 1
 
-    def Configure(self, preWhitening=None):
+    def Configure(self, preWhitening=None, addMotionEVs=None):
         """
         Configure the Stats settings.
         :param preWhitening: (bool) optional unless not specified in defaults
+        :param addMotionEVs: (int) optional unless not specified in defaults. Must be in FeatMotionEV.Options
         :return: None
         """
         if preWhitening is None:
@@ -1065,6 +1071,16 @@ class StatsOptions:
             if preWhitening not in [True, False]:
                 raise PyFSFError("Prewhiting must be bool")
         self.parent.settings["prewhiten_yn"] = int(preWhitening)
+
+        if addMotionEVs is None:
+            if hasattr(self, 'DEFAULT_MOTION_EVS'):
+                addMotionEVs = int(self.DEFAULT_MOTION_EVS)
+            else:
+                raise PyFSFError("No motion EVs choice was specified and none was found in defaults")
+        else:
+            if addMotionEVs not in FeatMotionEV.Options:
+                raise PyFSFError("addMotionEVs must be in FeatMotionEV.Options")
+        self.parent.settings["motionevs"] = addMotionEVs
 
     def AddFirstLevelEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:

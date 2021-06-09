@@ -64,6 +64,7 @@ class FeatMotionEV:
     NONE = 0
     STANDARD = 1
     STANDARD_PLUS_EXTENDED = 2
+    Options = [NONE,STANDARD,STANDARD_PLUS_EXTENDED]
 
 class HigherLevelModeling:
     MixedEffects_SimpleOLS = 0
