@@ -1038,9 +1038,14 @@ class StatsOptions:
             else:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = False
 
-        ## hack to prevent an error TODO
+        ## this is pending functions to set up custom basis fxns from FLOBS
         if "default_bfcustom" in self.parent.defaults:
             self.parent.settings["default_bfcustom"] = self.parent.defaults["default_bfcustom"].replace("${FSLDIR}", FSLDIR)
+
+        ## pending conmasking setup
+
+        self.parent.settings["conmask1_1"] = 0
+
 
         # Do stats
         self.parent.settings["stats_yn"] = 1
