@@ -6,7 +6,9 @@ Python functions to create an FSL FEAT configuration file (.fsf)
 
 Can be run from python command line/REPL or incorporated into a script
 
-**Work in progress -- not ready for use as yet**
+**Alpha version available on PyPI**
+
+```pip install fslfeatsetup```
 
 Feel free to contribute
 
