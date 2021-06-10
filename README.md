@@ -16,9 +16,12 @@ Feel free to contribute
 
 [On Python Package Index](https://pypi.org/project/fslfeatsetup/)
 
-## Get started
+## Overview
 
-todo
+The .fsf file is represented by the class `FeatSettings`, which is constructed with the analysis level and analysis type options.
+
+![Screen Shot 2021-06-10 at 11 37 34 AM](https://user-images.githubusercontent.com/34426450/121554571-4278c380-c9e0-11eb-8c9b-51b99588cad8.png)
+
 
 ## First-level analysis example
 ```python
