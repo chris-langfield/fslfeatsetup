@@ -1,4 +1,4 @@
-![pypi_badge](https://img.shields.io/pypi/v/fslfeatsetup?style=plastic)
+![devstatus](https://img.shields.io/badge/development--status-alpha-yellowgreen) ![pypi_badge](https://img.shields.io/pypi/v/fslfeatsetup?style=plastic)
 
 # fslfeatsetup
  
