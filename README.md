@@ -22,6 +22,8 @@ The .fsf file is represented by the class `FeatSettings`, which is constructed w
 
 ![Screen Shot 2021-06-10 at 11 37 34 AM](https://user-images.githubusercontent.com/34426450/121554571-4278c380-c9e0-11eb-8c9b-51b99588cad8.png)
 
+Each panel of the FEAT GUI is represented by a separate class, taking the initial `FeatSettings` object as its argument. Each of these objects has a `Configure()` function taking keyword arguments specifying the options available in that panel of the GUI. These are the `DataOptions`, `PreStatsOptions`, `RegOptions`, `StatsOptions`, and `PostStatsOptions` classes.
+
 
 ## First-level analysis example
 ```python
