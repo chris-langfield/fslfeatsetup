@@ -1,4 +1,4 @@
-![pypi_badge](https://img.shields.io/pypi/v/fslfeatsetup?style=plastic)
+![devstatus](https://img.shields.io/badge/development--status-alpha-yellowgreen) ![pypi_badge](https://img.shields.io/pypi/v/fslfeatsetup?style=plastic)
 
 # fslfeatsetup
  
@@ -16,9 +16,32 @@ Feel free to contribute
 
 [On Python Package Index](https://pypi.org/project/fslfeatsetup/)
 
-## Get started
+## Overview
 
-todo
+The .fsf file is represented by the class `FeatSettings`, which is constructed with the analysis level and analysis type options.
+
+![featoptions](https://user-images.githubusercontent.com/34426450/121554571-4278c380-c9e0-11eb-8c9b-51b99588cad8.png)
+
+Each panel of the FEAT GUI is represented by a separate class, taking the initial `FeatSettings` object as its argument. Each of these objects has a `Configure()` function taking keyword arguments specifying the options available in that panel of the GUI. These are the `MiscOptions`, `DataOptions`, `PreStatsOptions`, `RegOptions`, `StatsOptions`, and `PostStatsOptions` classes.
+
+For example the checkboxes and inputs on the Misc Options GUI panel correspond to the key-word arguments in the `MiscOptions.Configure()` function.
+
+`MiscOptions.Configure(brainThreshold=10, noiseLevel=0.66, temporalSmoothness=0.05, zThreshold=5.3, cleanupFirstLevel=False, overwriteOriginalPostStats = False, estimateNoiseFromData=False)`
+                 
+(*Some of these options pertain only to higher-level analyses*)
+
+
+![featmisc](https://user-images.githubusercontent.com/34426450/121555239-d3e83580-c9e0-11eb-97b8-a1a15861aa5d.png)
+
+Dropdown lists are represented by enum-like classes:
+
+`PreStatsOptions.Configure(st = FeatSliceTiming.REGULAR_UP)`
+
+`PreStatsOptions.Configure(st = FeatSliceTiming.TIMING_FILE, sliceTimingFile = "path/to/file")`
+
+![featdropdown](https://user-images.githubusercontent.com/34426450/121556252-b798c880-c9e1-11eb-8bae-a9058501d2bf.png)
+
+
 
 ## First-level analysis example
 ```python
