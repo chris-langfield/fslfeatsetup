@@ -266,7 +266,7 @@ class FeatSettings:
                         outFile.write(f"set fmri(con_real{c+1}.{x+1}) {self.Contrasts[c].vector[x]}\n\n")
 
             # length of orthogonalization vector is number of EVs plus 1 because you have to account for the null event 0
-            for o in range(len(self.Ortho)):
+            for o in range(1, len(self.Ortho)):
                 for p in range(len(self.Ortho[o])):
                     outFile.write(f"# Orthogonalise EV {o} wrt EV {p}\n")
                     outFile.write(f"set fmri(ortho{o}.{p}) {self.Ortho[o][p]}\n\n")
