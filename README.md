@@ -26,14 +26,7 @@ Each panel of the FEAT GUI is represented by a separate class, taking the initia
 
 For example the checkboxes and inputs on the Misc Options GUI panel correspond to the key-word arguments in the `MiscOptions.Configure()` function.
 
-```MiscOptions.Configure(
-                  brainThreshold=10, # int
-                  noiseLevel=0.66, # float
-                  temporalSmoothness=0.05, # float
-                  zThreshold=5.3, # float
-                  cleanupFirstLevel=False, # bool
-                  overwriteOriginalPostStats = False, # bool
-                  estimateNoiseFromData=False)```
+`MiscOptions.Configure(brainThreshold=10, noiseLevel=0.66, temporalSmoothness=0.05, zThreshold=5.3, cleanupFirstLevel=False, overwriteOriginalPostStats = False, estimateNoiseFromData=False)`
                  
 (*Some of these options pertain only to higher-level analyses*)
 
