@@ -33,6 +33,14 @@ For example the checkboxes and inputs on the Misc Options GUI panel correspond t
 
 ![featmisc](https://user-images.githubusercontent.com/34426450/121555239-d3e83580-c9e0-11eb-97b8-a1a15861aa5d.png)
 
+Dropdown lists are represented by enum-like classes:
+
+`PreStatsOptions.Configure(st = FeatSliceTiming.REGULAR_UP`
+
+`PreStatsOptions.Configure(st = FeatSliceTiming.TIMING_FILE, sliceTimingFile = "path/to/file")`
+
+![featdropdown](https://user-images.githubusercontent.com/34426450/121556252-b798c880-c9e1-11eb-8bae-a9058501d2bf.png)
+
 
 
 ## First-level analysis example
