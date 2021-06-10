@@ -20,9 +20,26 @@ Feel free to contribute
 
 The .fsf file is represented by the class `FeatSettings`, which is constructed with the analysis level and analysis type options.
 
-![Screen Shot 2021-06-10 at 11 37 34 AM](https://user-images.githubusercontent.com/34426450/121554571-4278c380-c9e0-11eb-8c9b-51b99588cad8.png)
+![featoptions](https://user-images.githubusercontent.com/34426450/121554571-4278c380-c9e0-11eb-8c9b-51b99588cad8.png)
 
-Each panel of the FEAT GUI is represented by a separate class, taking the initial `FeatSettings` object as its argument. Each of these objects has a `Configure()` function taking keyword arguments specifying the options available in that panel of the GUI. These are the `DataOptions`, `PreStatsOptions`, `RegOptions`, `StatsOptions`, and `PostStatsOptions` classes.
+Each panel of the FEAT GUI is represented by a separate class, taking the initial `FeatSettings` object as its argument. Each of these objects has a `Configure()` function taking keyword arguments specifying the options available in that panel of the GUI. These are the `MiscOptions`, `DataOptions`, `PreStatsOptions`, `RegOptions`, `StatsOptions`, and `PostStatsOptions` classes.
+
+For example the checkboxes and inputs on the Misc Options GUI panel correspond to the key-word arguments in the `MiscOptions.Configure()` function.
+
+```MiscOptions.Configure(
+                  brainThreshold=10, # int
+                  noiseLevel=0.66, # float
+                  temporalSmoothness=0.05, # float
+                  zThreshold=5.3, # float
+                  cleanupFirstLevel=False, # bool
+                  overwriteOriginalPostStats = False, # bool
+                  estimateNoiseFromData=False)```
+                 
+(*Some of these options pertain only to higher-level analyses*)
+
+
+![featmisc](https://user-images.githubusercontent.com/34426450/121555239-d3e83580-c9e0-11eb-97b8-a1a15861aa5d.png)
+
 
 
 ## First-level analysis example
