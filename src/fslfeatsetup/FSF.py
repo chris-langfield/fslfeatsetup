@@ -618,7 +618,7 @@ class PreStatsOptions:
                   sliceTiming = None, # int
                   sliceTimingFile = None, # filepath
                   bet = None, # bool
-                  spatialSmoothing = -1.0, # float
+                  spatialSmoothing = None, # float
                   intensityNormalization = None, # bool
                   perfusionSubtraction = None, # bool
                   perfusionTagControlOrder = None, # int
