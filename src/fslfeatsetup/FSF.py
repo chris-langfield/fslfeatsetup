@@ -140,12 +140,7 @@ class FeatSettings:
         # Some defaults not appearing in GUI
         self.settings["relative_yn"] = 0
 
-        # sometimes FEAT throws an error and cannot find ${FSLDIR}, so this just replaces defaults containing
-        # $FSLDIR with the FSLDIR found by this program
-        if "default_bfcustom" in self.defaults:
-            self.settings["default_bfcustom"] = self.defaults["default_bfcustom"].replace("${FSLDIR}", FSLDIR)
-        if "regstandard" in self.defaults:
-            self.settings["regstandard"] = self.defaults["regstandard"].replace("${FSLDIR}", FSLDIR)
+
 
         # get default settings
         if os.path.exists(defaultsFilename):
@@ -158,6 +153,13 @@ class FeatSettings:
                     self.defaults[option] = value
         else:
             print("Warning: The defaults file specified (" + defaultsFilename + ") was not found. No settings were loaded.")
+
+        # sometimes FEAT throws an error and cannot find ${FSLDIR}, so this just replaces defaults containing
+        # $FSLDIR with the FSLDIR found by this program
+        if "default_bfcustom" in self.defaults:
+            self.settings["default_bfcustom"] = self.defaults["default_bfcustom"].replace("${FSLDIR}", FSLDIR)
+        if "regstandard" in self.defaults:
+            self.settings["regstandard"] = self.defaults["regstandard"].replace("${FSLDIR}", FSLDIR)
 
     def setLevel(self, LEVEL):
         if LEVEL in [1,2]:
