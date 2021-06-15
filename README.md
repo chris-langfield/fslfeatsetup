@@ -121,6 +121,7 @@ todo
 
 |  PyPI version |  Description |
 | ------ | ------ |
+| 0.3.4  | fixes related to the Issues page. No methods or classes are different |
 | 0.2.8  | Generated an .fsf accepted by FEAT. There are a bunch of hard-coded defaults that still need to be fixed |
 | 0.2.5  | Fixed gammadelay being blank and FSLDIR not found |
 | 0.2.3  | Patch: quotations for custom EV files |
