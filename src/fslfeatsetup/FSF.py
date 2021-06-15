@@ -122,6 +122,12 @@ class FeatSettings:
         if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
             raise PyFSFError("Level must be FeatLevel.HIGHER_LEVEL or FeatLevel.FIRST_LEVEL")
         self.LEVEL = LEVEL
+
+        # If first level, set input type to 2 ("cope images") even though it's just FMRI data
+        # otherwise FEAT might try cd to the path provided, and errors because its a file, not a directory
+        if self.LEVEL == FeatLevel.FIRST_LEVEL:
+            self.setOption("inputtype",2)
+
         if ANALYSIS not in [FeatAnalysis.STATS, FeatAnalysis.PREPROCESSING, FeatAnalysis.FULL_ANALYSIS]:
             raise PyFSFError("Analysis must be FeatAnalysis.STATS, FeatAnalysis.PREPROCESSING, or FeatAnalysis.FULL_ANALYSIS")
         self.ANALYSIS = ANALYSIS
@@ -132,8 +138,14 @@ class FeatSettings:
         self.settings["version"] = FEAT_VERSION
 
         # Some defaults not appearing in GUI
-
         self.settings["relative_yn"] = 0
+
+        # sometimes FEAT throws an error and cannot find ${FSLDIR}, so this just replaces defaults containing
+        # $FSLDIR with the FSLDIR found by this program
+        if "default_bfcustom" in self.defaults:
+            self.settings["default_bfcustom"] = self.defaults["default_bfcustom"].replace("${FSLDIR}", FSLDIR)
+        if "regstandard" in self.defaults:
+            self.settings["regstandard"] = self.defaults["regstandard"].replace("${FSLDIR}", FSLDIR)
 
         # get default settings
         if os.path.exists(defaultsFilename):
@@ -181,8 +193,6 @@ class FeatSettings:
             for s in self.settings:
                 if s in Comments:
                     outFile.write(Comments[s])
-                else:
-                    print(s, "not in Comments")
                 outFile.write("set fmri(" + s + ") " + str(self.settings[s]) + "\n\n")
             for i in range(len(self.inputs)):
                 outFile.write("set feat_files(" + str(i+1) + ") \"" + self.inputs[i] + "\"\n\n")
@@ -1043,9 +1053,7 @@ class StatsOptions:
             else:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = False
 
-        ## this is pending functions to set up custom basis fxns from FLOBS
-        if "default_bfcustom" in self.parent.defaults:
-            self.parent.settings["default_bfcustom"] = self.parent.defaults["default_bfcustom"].replace("${FSLDIR}", FSLDIR)
+
 
         ## pending conmasking setup
 
