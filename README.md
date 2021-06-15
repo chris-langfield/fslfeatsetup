@@ -92,7 +92,8 @@ Dropdown lists are represented by enum-like classes:
            # using all defaults, so I don't need to specify keyword arguments
            Stats.Configure()
            # Add EVs from custom 3 column text formats. 
-           # specify the parameters of the convolution function, or use defaults:
+           # Note that ONLY the 3-column text file format is currently supported
+           # specify the parameters of the convolution function, or use defaults
            Stats.AddFirstLevelEV("myEV1","path/to/my/EV1",Gamma(phase=0, stdev=3, lag=6))
            Stats.AddFirstLevelEV("myEV2","path/to/my/EV2",Gamma())
            Stats.AddFirstLevelEV("myEV3","path/to/my/EV3",Gamma())
