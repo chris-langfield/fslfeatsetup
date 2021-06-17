@@ -7,7 +7,7 @@ FSF.pyc
 sampledata/ExBox*/*
 dist/*
 pydoc-markdown.yml
-src/fsl_feat_setup.egg-info/*
+src/fslfeatsetup.egg-info/*
 build/bdist*
 build/lib/*
 .readthedocs*
