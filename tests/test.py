@@ -4,14 +4,15 @@
 # https://www.fmrib.ox.ac.uk/primers/intro_primer/ExBox11/IntroBox11.html
 
 import glob
-from FSF import *
+from fslfeatsetup.FSF import *
+from fslfeatsetup.EVs import *
+from fslfeatsetup.FSFLabels import *
 
 def TestFirstLevel():
 
     outputDir = "test.feat"
     inputs = ["sampledata/ExBox11/fmri.nii.gz"]
     structural = ["sampledata/ExBox11/structural_brain.nii.gz"]
-
 
     simpleRunFSF = FeatSettings(FeatLevel.FIRST_LEVEL, FeatAnalysis.FULL_ANALYSIS)
 
@@ -36,7 +37,7 @@ def TestFirstLevel():
     srStats.AddFirstLevelEV("bla","bla.txt", Gamma(0,7,1))
     srStats.OrthogonalizeEVs([[1,0],[0,1]])
 
-    simpleRunFSF.write("testfirstlevl.fsf")
+    simpleRunFSF.write("tests/output_testfirstlevel.fsf")
 
 def TestHigherLevel():
     outputDir = "testHigherLevel.gfeat"
@@ -54,7 +55,7 @@ def TestHigherLevel():
     orthoMatrix = [[ 0 for x in range(len(inputs)+1)] for y in range(len(inputs)+1)]
     shlStats.OrthogonalizeEVs(orthoMatrix)
 
-    simpleHigherLevel.write("testhigherlevel.fsf")
+    simpleHigherLevel.write("tests/output_testhigherlevel.fsf")
 
 TestHigherLevel()
 TestFirstLevel()
