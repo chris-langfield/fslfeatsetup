@@ -5,6 +5,7 @@ from .FSFLabels import *
 from .EVs import *
 from .Comments import *
 import fsl
+from fsl.data import featanalysis
 
 class PyFSFError(Exception):
     """
@@ -1091,7 +1092,7 @@ class StatsOptions:
         else:
             if addMotionEVs not in FeatMotionEV.Options:
                 raise PyFSFError("addMotionEVs must be in FeatMotionEV.Options")
-        self.parent.settings["motionevs"] = addMotionEVs
+        self.parent.settings["motionevs"] = int(addMotionEVs)
 
     def AddFirstLevelEV(self, name, filename, hrf, temporalDerivative=False, temporalFiltering=True):
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
