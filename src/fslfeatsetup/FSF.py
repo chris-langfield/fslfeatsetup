@@ -400,22 +400,22 @@ class DataOptions:
         for i in range(len(inputPaths)):
             self.parent.inputs.append(inputPaths[i])
 
+        if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
+            ## voxel size
+            try:
+                dim1 = int(
+                    subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+                dim2 = int(
+                    subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+                dim3 = int(
+                    subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+                dim4 = int(
+                    subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
+            except:
+                raise PyFSFError("Problem with getting image dimensions for " + inputPaths[0])
 
-        ## voxel size
-        try:
-            dim1 = int(
-                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-            dim2 = int(
-                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-            dim3 = int(
-                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-            dim4 = int(
-                subprocess.getoutput(FSLDIR + "/bin/fslval " + inputPaths[0] + " dim1").replace("\n", "").strip())
-        except:
-            raise PyFSFError("Problem with getting image dimensions for " + inputPaths[0])
-
-        totalVoxels = dim1 * dim2 * dim3 * dim4
-        self.parent.settings["totalVoxels"] = totalVoxels
+            totalVoxels = dim1 * dim2 * dim3 * dim4
+            self.parent.settings["totalVoxels"] = totalVoxels
 
     def printSettings(self):
         print("Data Settings: " + self.parent.settings["outputdir"])
