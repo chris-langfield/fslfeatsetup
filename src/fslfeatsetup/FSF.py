@@ -118,6 +118,8 @@ class FeatSettings:
         self.GroupMembership = []
         # list of lists of 1s and 0s
         self.Ortho = []
+        # for higher level only
+        self.IncludeLowerLevelCopes = []
 
         if LEVEL not in [FeatLevel.HIGHER_LEVEL, FeatLevel.FIRST_LEVEL]:
             raise PyFSFError("Level must be FeatLevel.HIGHER_LEVEL or FeatLevel.FIRST_LEVEL")
@@ -1152,6 +1154,19 @@ class StatsOptions:
             except ValueError:
                 raise PyFSFError("Randomise permutations must be int")
         self.parent.settings["randomisePermutations"] = randomisePermutations
+
+    def ConfigureLowerLevelCopes(self, vector):
+        if not self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
+            raise PyFSFError("Cannot configure lower level copes unless doing a higher level analysis")
+        if not self.parent.settings["inputtype"] == 1:
+            raise PyFSFError("Input type for higher level analysis is currently set to 'Cope images'. Only use ConfigureLowerLevelCopes if input type is 'Lower level FEAT directories'")
+
+        numCopesIn = len(vector)
+        numCopes = len(fsl.data.featanalysis.loadContrasts(self.parent.inputs[0])[0])
+        if not numCopesIn == numCopes:
+            raise PyFSFError(f"{numCopesIn} lower level copes specified by user, but {numCopes} are in lower level feat directory")
+        self.parent.IncludeLowerLevelCopes = vector
+
 
 class PostStatsOptions:
     def __init__(self, parent):
