@@ -291,6 +291,16 @@ class FeatSettings:
                     outFile.write(f"set fmri(groupmem.{g+1}) {self.GroupMembership[g]}\n\n")
 
                 # contrasts
+                outFile.write("# Number of Contrasts\n")
+                outFile.write(f"set fmri(ncon_orig) {len(self.Contrasts)}\n")
+                outFile.write(f"set fmri(ncon_real) {len(self.Contrasts)}\n\n")
+                
+                outFile.write("# Contrast & F-tests mode\n")
+                outFile.write("# real : control real EVs\n")
+                outFile.write("# orig : control original EVs\n")
+                outFile.write("set fmri(con_mode_old) real\n")
+                outFile.write("set fmri(con_mode) real\n")
+
                 for c in range(len(self.Contrasts)):
                     outFile.write(f"set fmri(conpic_real.{c+1}) 1\n\n")
                     outFile.write(f"set fmri(conname_real.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
@@ -302,6 +312,11 @@ class FeatSettings:
                 for p in range(len(self.Ortho[o])):
                     outFile.write(f"# Orthogonalise EV {o} wrt EV {p}\n")
                     outFile.write(f"set fmri(ortho{o}.{p}) {self.Ortho[o][p]}\n\n")
+
+            outFile.write("# Number of F-tests\n")
+            outFile.write(f"set fmri(nftests_orig) 0\n")
+            outFile.write(f"set fmri(nftests_real) 0\n\n")
+
 
 class DataOptions:
     """
