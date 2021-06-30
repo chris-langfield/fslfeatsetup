@@ -279,7 +279,7 @@ class FeatSettings:
                 for e in range(len(self.EVs)):
                     outFile.write("set fmri(evtitle" + str(e + 1) + ") \"" + self.EVs[e].name + "\"\n\n")
                     for i in range(len(self.EVs[e].vector)):
-                        outFile.write(f"set fmri(evg{e+1}.{i+1}) {self.EVs[e].vector[i]}\n\n")
+                        outFile.write(f"set fmri(evg{i+1}.{e+1}) {self.EVs[e].vector[i]}\n\n")
 
                 # group membership
                 for g in range(len(self.GroupMembership)):
