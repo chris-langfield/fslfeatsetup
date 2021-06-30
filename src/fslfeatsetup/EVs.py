@@ -30,6 +30,7 @@ class NoneConvolution:
     """
     def __init__(self, phase=0):
         self.phase=phase
+        self.idx = 0
 
     def write(self, num):
         return f"# Convolve phase (EV {num})\nset fmri(convolve_phase{num}) {self.phase}\n\n"
