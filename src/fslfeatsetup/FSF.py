@@ -276,6 +276,11 @@ class FeatSettings:
                         outFile.write(f"set fmri(copeinput.{i+1}) {self.IncludeLowerLevelCopes[i]}\n\n")
 
                 # evs
+                outFile.write("# Number of EVs\n")
+                outFile.write(f"set fmri(evs_orig) {len(self.EVs)}\n")
+                outFile.write(f"set fmri(evs_real) {len(self.EVs)}\n")
+                outFile.write(f"set fmri(evs_vox) 0\n\n")
+
                 for e in range(len(self.EVs)):
                     outFile.write("set fmri(evtitle" + str(e + 1) + ") \"" + self.EVs[e].name + "\"\n\n")
                     for i in range(len(self.EVs[e].vector)):
