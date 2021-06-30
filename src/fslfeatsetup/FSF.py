@@ -270,7 +270,7 @@ class FeatSettings:
                 if self.IncludeLowerLevelCopes:
                     outFile.write(f"# Number of lower-level copes feeding into higher-level analysis\n")
                     outFile.write(f"set fmri(ncopeinputs) {self.settings['ncopeinputs']}\n\n")
-                    for i in range(len(self.IncludeLowerLevelCopes))
+                    for i in range(len(self.IncludeLowerLevelCopes)):
                         outFile.write(f"# Use lower-level cope {i+1} for higher-level analysis\n")
                         outFile.write(f"set fmri(copeinput.{i+1}) {self.IncludeLowerLevelCopes[i]}\n\n")
 
