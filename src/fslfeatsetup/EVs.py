@@ -24,6 +24,16 @@ class FeatHRFConvolution:
     FIRBasis = 6
     CustomBasis = 7
 
+class NoneConvolution:
+    """
+    Object represent a 'None' convolution and its parameter. Used for the hrf kwarg in the FirstLevelEV or HigherLevelEV classes
+    """
+    def __init__(self, phase=0):
+        self.phase=phase
+
+    def write(self, num):
+        return f"# Convolve phase (EV {num})\nset fmri(convolve_phase{num}) {self.phase}\n\n"
+
 class Gamma:
     """
     Object representing a Gamma convolution and its parameters. Used for the hrf kwarg in the FirstLevelEV class.
@@ -89,9 +99,13 @@ class HigherLevelEV:
     """
     Object representing a higher level EV
     """
-    def __init__(self, name, vector):
+    def __init__(self, name, vector, hrf, temporalDerivative=False, temporalFiltering=True, shape=FeatEVShapes.Custom1EntryPerVolume):
         self.name = name
         self.vector = vector
+        self.hrf = hrf
+        self.temporalDerivative = temporalDerivative
+        self.temporalFiltering = temporalFiltering
+        self.shape = shape
 
 class Contrast:
     """
