@@ -265,14 +265,26 @@ class FeatSettings:
                 outFile.write(f"set fmri(nftests_real) 0\n\n")
 
             if self.LEVEL == FeatLevel.HIGHER_LEVEL:
+
+                # cope inputs
+                if self.IncludeLowerLevelCopes:
+                    outFile.write(f"# Number of lower-level copes feeding into higher-level analysis\n")
+                    outFile.write(f"set fmri(ncopeinputs) {self.settings['ncopeinputs']}\n\n")
+                    for i in range(len(self.IncludeLowerLevelCopes))
+                        outFile.write(f"# Use lower-level cope {i+1} for higher-level analysis\n")
+                        outFile.write(f"set fmri(copeinput.{i+1}) {self.IncludeLowerLevelCopes[i]}\n\n")
+
+                # evs
                 for e in range(len(self.EVs)):
                     outFile.write("set fmri(evtitle" + str(e + 1) + ") \"" + self.EVs[e].name + "\"\n\n")
                     for i in range(len(self.EVs[e].vector)):
                         outFile.write(f"set fmri(evg{e+1}.{i+1}) {self.EVs[e].vector[i]}\n\n")
 
+                # group membership
                 for g in range(len(self.GroupMembership)):
                     outFile.write(f"set fmri(groupmem.{g+1}) {self.GroupMembership[g]}\n\n")
 
+                # contrasts
                 for c in range(len(self.Contrasts)):
                     outFile.write(f"set fmri(conpic_real.{c+1}) 1\n\n")
                     outFile.write(f"set fmri(conname_real.{c+1}) \"{self.Contrasts[c].name}\"\n\n")
@@ -284,7 +296,6 @@ class FeatSettings:
                 for p in range(len(self.Ortho[o])):
                     outFile.write(f"# Orthogonalise EV {o} wrt EV {p}\n")
                     outFile.write(f"set fmri(ortho{o}.{p}) {self.Ortho[o][p]}\n\n")
-
 
 class DataOptions:
     """
@@ -406,8 +417,6 @@ class DataOptions:
         totalVoxels = dim1 * dim2 * dim3 * dim4
         self.parent.settings["totalVoxels"] = totalVoxels
 
-
-
     def printSettings(self):
         print("Data Settings: " + self.parent.settings["outputdir"])
         print(FeatLevelToStr[self.parent.LEVEL], "|", FeatAnalysisToStr[self.parent.ANALYSIS])
@@ -421,7 +430,6 @@ class DataOptions:
         print("Inputs: ")
         for i in range(len(self.parent.inputs)):
             print("\t", i+1, self.parent.inputs[i])
-
 
 class MiscOptions:
     """
@@ -541,8 +549,6 @@ class MiscOptions:
                     raise PyFSFError("overwriteOriginalPostStats must be bool")
             self.parent.settings["newdir_yn"] = int(overwriteOriginalPostStats)
 
-
-
     def printSettings(self):
         print("Misc Settings: " + self.parent.settings["outputdir"])
         print(FeatLevelToStr[self.parent.LEVEL], "|", FeatAnalysisToStr[self.parent.ANALYSIS])
@@ -554,8 +560,6 @@ class MiscOptions:
             print("Z-threshold:", self.parent.settings["critical_z"])
         if self.parent.LEVEL == FeatLevel.HIGHER_LEVEL:
             print("Cleanup first level standard-space images", self.parent.settings["sscleanup"])
-
-
 
 class PreStatsOptions:
     def __init__(self, parent):
@@ -1036,7 +1040,6 @@ class RegOptions:
                     raise PyFSFError("Warp resolution must be int")
             self.parent.settings["regstandard_nonlinear_warpres"] = warpResolution
 
-
 class StatsOptions:
     def __init__(self,parent):
         self.parent = parent
@@ -1057,12 +1060,8 @@ class StatsOptions:
             else:
                 self.DEFAULT_OUTLIER_DEWEIGHTING = False
 
-
-
         ## pending conmasking setup
-
         self.parent.settings["conmask1_1"] = 0
-
 
         # Do stats
         self.parent.settings["stats_yn"] = 1
@@ -1166,7 +1165,7 @@ class StatsOptions:
         if not numCopesIn == numCopes:
             raise PyFSFError(f"{numCopesIn} lower level copes specified by user, but {numCopes} are in lower level feat directory")
         self.parent.IncludeLowerLevelCopes = vector
-
+        self.parent.settings["ncopeinputs"] = len([x for x in vector if x == 1])
 
 class PostStatsOptions:
     def __init__(self, parent):
