@@ -282,25 +282,26 @@ class FeatSettings:
                 outFile.write(f"set fmri(evs_vox) 0\n\n")
 
                 for e in range(len(self.EVs)):
+                    outFile.write(f"# EV {e + 1} title\n")
                     outFile.write("set fmri(evtitle" + str(e + 1) + ") \"" + self.EVs[e].name + "\"\n\n")
+                    outFile.write(
+                        f"# Basic waveform shape (EV {e + 1})\n# 0 : Square\n# 1 : Sinusoid\n# 2 : Custom (1 entry per volume)\n# 3 : Custom (3 column format)\n# 4 : Interaction\n# 10 : Empty (all zeros)\n")
+                    outFile.write("set fmri(shape" + str(e + 1) + ") " + str(self.EVs[e].shape) + "\n\n")
+                    outFile.write(
+                        f"# Convolution (EV {e + 1})\n# 0 : None\n# 1 : Gaussian\n# 2 : Gamma\n# 3 : Double-Gamma HRF\n# 4 : Gamma basis functions\n# 5 : Sine basis functions\n# 6 : FIR basis functions\n")
+                    outFile.write("set fmri(convolve" + str(e + 1) + ") " + str(self.EVs[e].hrf.idx) + "\n\n")
+                    outFile.write(self.EVs[e].hrf.write(e + 1))
+                    outFile.write(f"# Apply temporal filtering (EV {e + 1})\n")
+                    outFile.write("set fmri(tempfilt_yn" + str(e + 1) + ") " + str(
+                        int(self.EVs[e].temporalFiltering)) + "\n\n")
+                    outFile.write(f"# Add temporal derivative (EV {e + 1})\n")
+                    outFile.write(
+                        "set fmri(deriv_yn" + str(e + 1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
+                    outFile.write(f"# Custom EV file (EV {e + 1})\n")
+                    outFile.write("set fmri(custom" + str(e + 1) + ") \"dummy\"\n\n")
+
                     for i in range(len(self.EVs[e].vector)):
-                        outFile.write(f"# EV {e + 1} title\n")
-                        outFile.write("set fmri(evtitle" + str(e + 1) + ") \"" + self.EVs[e].name + "\"\n\n")
-                        outFile.write(
-                            f"# Basic waveform shape (EV {e + 1})\n# 0 : Square\n# 1 : Sinusoid\n# 2 : Custom (1 entry per volume)\n# 3 : Custom (3 column format)\n# 4 : Interaction\n# 10 : Empty (all zeros)\n")
-                        outFile.write("set fmri(shape" + str(e + 1) + ") " + str(self.EVs[e].shape) + "\n\n")
-                        outFile.write(
-                            f"# Convolution (EV {e + 1})\n# 0 : None\n# 1 : Gaussian\n# 2 : Gamma\n# 3 : Double-Gamma HRF\n# 4 : Gamma basis functions\n# 5 : Sine basis functions\n# 6 : FIR basis functions\n")
-                        outFile.write("set fmri(convolve" + str(e + 1) + ") " + str(self.EVs[e].hrf.idx) + "\n\n")
-                        outFile.write(self.EVs[e].hrf.write(e + 1))
-                        outFile.write(f"# Apply temporal filtering (EV {e + 1})\n")
-                        outFile.write("set fmri(tempfilt_yn" + str(e + 1) + ") " + str(
-                            int(self.EVs[e].temporalFiltering)) + "\n\n")
-                        outFile.write(f"# Add temporal derivative (EV {e + 1})\n")
-                        outFile.write(
-                            "set fmri(deriv_yn" + str(e + 1) + ") " + str(int(self.EVs[e].temporalDerivative)) + "\n\n")
-                        outFile.write(f"# Custom EV file (EV {e + 1})\n")
-                        outFile.write("set fmri(custom" + str(e + 1) + ") \"dummy\"\n\n")
+                        outFile.write(f"set fmri(evg{i+1}.{e+1}) {self.EVs[e].vector[i]}\n\n")
 
                 # group membership
                 for g in range(len(self.GroupMembership)):
