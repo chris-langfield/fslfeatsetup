@@ -1136,7 +1136,7 @@ class StatsOptions:
         newEV = FirstLevelEV(name, filename, hrf, temporalDerivative, temporalFiltering)
         self.parent.EVs.append(newEV)
 
-    def AddHigherLevelEV(self, name, vector, hrf, temporalDerivative=False, temporalFiltering=True):
+    def AddHigherLevelEV(self, name, vector, hrf, temporalDerivative=False, temporalFiltering=True, shape = FeatEVShapes.Custom1EntryPerVolume):
         if self.parent.LEVEL == FeatLevel.FIRST_LEVEL:
             raise PyFSFError("Cannot add a higher level EV to a first level analysis!")
         newEV = HigherLevelEV(name, vector, hrf, temporalDerivative, temporalFiltering, shape)
