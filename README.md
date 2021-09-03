@@ -1,5 +1,7 @@
 ![devstatus](https://img.shields.io/badge/development--status-alpha-yellowgreen) ![pypi_badge](https://img.shields.io/pypi/v/fslfeatsetup?style=plastic)
 
+# NOT currently maintained. Use at own risk.
+
 # fslfeatsetup
  
 Python functions to create an FSL FEAT configuration file (.fsf)
